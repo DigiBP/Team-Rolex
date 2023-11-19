@@ -1,4 +1,6 @@
-# Team-Rolex
+# Team-Rolex - Fast medication automation
+
+![](./static/img/header.svg)
 
 ## Team Members 👩🏽‍⚕️👩🏻‍⚕️👩🏻‍⚕️👨🏽‍⚕️
 
@@ -31,11 +33,11 @@
 ___________
 
 ### Issues with the current As-Is Proces 🚩
-![](./EHR-System-Rolex-toBe.png)
+
 ___________
 
 ## To-Be Process
-
+![](./EHR-System-Rolex-toBe.png)
 
 
 ### Benefits ✔️
