@@ -1,1 +1,49 @@
 # Team-Rolex
+
+## Team Members 👩🏽‍⚕️👩🏻‍⚕️👩🏻‍⚕️👨🏽‍⚕️
+
+| Names  | Emails |
+| ------------- | ------------- |
+| Sebastian Fernandez | sebastian.fernandez@students.fhnw.ch |
+| Chen Bojana | bojana.chen@students.fhnw.ch |
+| Romeny Gerardo | gerardo.romenykunstmann@students.fhnw.ch |
+| Hardegger Magdalena  | magdalena.hardegger@students.fhnw.ch  |
+
+## Links 🔗
+- API: [DeepNote](https://deepnote.com/workspace/daught-90c8f362-c010-4677-9f84-fd2c734b75ff/project/Sebastians-Untitled-project-927aa70e-3479-4236-ae8d-88111fb4fd4f/notebook/EHR-System-6c884184676d4ab89132c5ffc9ce726a?) (Version Sebastian 11.15.2023)
+- Google Forms: [Prescription](https://docs.google.com/forms/d/e/1FAIpQLSfTyC9M5EsB9jfqm9VB2KIwuVtSYK3EG5AdTjiTN4MWRj9KTg/viewform)
+- Camunda Rest-API: [Process_EHR-System_Rolex](https://digibp.herokuapp.com/camunda/app/cockpit/default/#/process-definition/Process_EHR-System-Rolex:42:3e68d545-8674-11ee-b94e-06a6124ce9a3/runtime?searchQuery=%5B%5D&viewbox=%7B%22Definitions_0tw53ak%22:%7B%22x%22:-358,%22y%22:17,%22width%22:2745,%22height%22:976%7D%7D)
+
+## Coach
+- Andreas Martin
+- Charuta Panda
+
+## Introduction
+
+
+## Goal 🎯
+
+## Current As-Is Process
+![](./EHR-System-Rolex-asIs.png)
+
+
+___________
+
+### Issues with the current As-Is Proces 🚩
+![](./EHR-System-Rolex-toBe.png)
+___________
+
+## To-Be Process
+
+
+
+### Benefits ✔️
+
+
+___________
+
+### Scenario
+
+## Fully automated process
+
+## Conclusion
