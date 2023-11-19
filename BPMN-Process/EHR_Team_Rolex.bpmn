@@ -22,6 +22,7 @@
           <camunda:formField id="patient_name" label="patient_name" type="string" />
           <camunda:formField id="birthday" label="birthday" type="string" />
           <camunda:formField id="prescription" label="prescription" type="string" />
+          <camunda:formField id="recepientEmail" label="recepientEmail" type="string" />
         </camunda:formData>
       </bpmn:extensionElements>
       <bpmn:outgoing>Flow_055q89v</bpmn:outgoing>
@@ -78,9 +79,9 @@
 );</camunda:script>
             </camunda:inputParameter>
             <camunda:inputParameter name="url">https://927aa70e-3479-4236-ae8d-88111fb4fd4f.deepnoteproject.com/patient/updateHealthInformation</camunda:inputParameter>
-            <camunda:outputParameter name="update_ehr_success">
+            <camunda:outputParameter name="message">
               <camunda:script scriptFormat="JavaScript">object=JSON.parse(response);
-update_ehr_success=object.message;</camunda:script>
+message=object.message;</camunda:script>
             </camunda:outputParameter>
             <camunda:outputParameter name="headers">
               <camunda:map>
@@ -121,8 +122,11 @@ update_ehr_success=object.message;</camunda:script>
             </camunda:outputParameter>
             <camunda:outputParameter name="has_duplicate">
               <camunda:script scriptFormat="JavaScript">object=JSON.parse(response);
-has_duplicate=(object.hasDuplicate.toLowerCase() === 'true');
-</camunda:script>
+has_duplicate=(object.status.toLowerCase() === 'true');</camunda:script>
+            </camunda:outputParameter>
+            <camunda:outputParameter name="message">
+              <camunda:script scriptFormat="JavaScript">object=JSON.parse(response);
+message=object.message;</camunda:script>
             </camunda:outputParameter>
           </camunda:inputOutput>
           <camunda:connectorId>http-connector</camunda:connectorId>
@@ -176,8 +180,12 @@ has_duplicate=(object.hasDuplicate.toLowerCase() === 'true');
             </camunda:outputParameter>
             <camunda:outputParameter name="has_interactions">
               <camunda:script scriptFormat="JavaScript">object=JSON.parse(response);
-has_interactions=(object.hasInteraction.toLowerCase() === 'true');
+has_interactions=(object.status.toLowerCase() === 'true');
 </camunda:script>
+            </camunda:outputParameter>
+            <camunda:outputParameter name="message">
+              <camunda:script scriptFormat="JavaScript">object=JSON.parse(response);
+message=object.message;</camunda:script>
             </camunda:outputParameter>
           </camunda:inputOutput>
           <camunda:connectorId>http-connector</camunda:connectorId>
@@ -218,7 +226,11 @@ has_interactions=(object.hasInteraction.toLowerCase() === 'true');
             </camunda:outputParameter>
             <camunda:outputParameter name="exists">
               <camunda:script scriptFormat="JavaScript">object=JSON.parse(response);
-exists=(object.message.toLowerCase() === 'true');</camunda:script>
+exists=(object.status.toLowerCase() === 'true');</camunda:script>
+            </camunda:outputParameter>
+            <camunda:outputParameter name="message">
+              <camunda:script scriptFormat="JavaScript">object=JSON.parse(response);
+message=object.message;</camunda:script>
             </camunda:outputParameter>
           </camunda:inputOutput>
           <camunda:connectorId>http-connector</camunda:connectorId>
@@ -245,12 +257,12 @@ exists=(object.message.toLowerCase() === 'true');</camunda:script>
           <camunda:connector>
             <camunda:inputOutput>
               <camunda:inputParameter name="url">https://hook.eu2.make.com/rmg4nu7cblde8y8us4jukd85om7g1x48</camunda:inputParameter>
-              <camunda:inputParameter name="methods">POST</camunda:inputParameter>
+              <camunda:inputParameter name="method">POST</camunda:inputParameter>
               <camunda:inputParameter name="payload">
                 <camunda:script scriptFormat="JavaScript">out = JSON.stringify(
 {
-    "emailRecepient": patient_email,
-    "html": "&lt;!DOCTYPE html&gt;&lt;html lang='en'&gt;&lt;head&gt;&lt;meta charset='UTF-8'&gt;&lt;meta name='viewport' content='width=device-width, initial-scale=1.0'&gt;&lt;title&gt;Notification: Prescription Automation&lt;/title&gt;&lt;style&gt;body {font-family: Arial, sans-serif;margin: 0;padding: 0;background-color: #f4f4f4;}.container {max-width: 600px;margin: 20px auto;padding: 20px;background-color: #ffffff;box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);}h1 {color: #333333;}p {color: #555555;}.cta-button {display: inline-block;padding: 10px 20px;background-color: #3498db;color: #ffffff;text-decoration: none;border-radius: 5px;}&lt;/style&gt;&lt;/head&gt;&lt;body&gt;&lt;div class='container'&gt;&lt;h1&gt;Notification: Prescription Automation&lt;/h1&gt;&lt;p&gt;Hello "+patient_name+",&lt;/p&gt;&lt;p&gt;This is a sample email template with a small text. You can customize the content as per your needs.&lt;/p&gt;&lt;p&gt;Feel free to add more text or include any additional information you'd like to share.&lt;/p&gt;&lt;p&gt;Thank you for your attention!&lt;/p&gt;&lt;a href='#' class='cta-button'&gt;Learn More&lt;/a&gt;&lt;p&gt;Best regards,&lt;br&gt;Health Information Systems&lt;/p&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;"
+    "emailRecepient": recepientEmail,
+    "html": "&lt;!DOCTYPE html&gt;&lt;html lang='en'&gt;&lt;head&gt;&lt;meta charset='UTF-8'&gt;&lt;meta name='viewport' content='width=device-width, initial-scale=1.0'&gt;&lt;title&gt;Notification: Prescription Automation&lt;/title&gt;&lt;style&gt;body {font-family: Arial, sans-serif;margin: 0;padding: 0;background-color: #f4f4f4;}.container {max-width: 600px;margin: 20px auto;padding: 20px;background-color: #ffffff;box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);}h1 {color: #333333;}p {color: #555555;}.cta-button {display: inline-block;padding: 10px 20px;background-color: #3498db;color: #ffffff;text-decoration: none;border-radius: 5px;}&lt;/style&gt;&lt;/head&gt;&lt;body&gt;&lt;div class='container'&gt;&lt;h1&gt;Notification: Prescription Automation&lt;/h1&gt;&lt;p&gt;Hello "+patient_name+",&lt;/p&gt;&lt;p&gt;"+message+"&lt;/p&gt;&lt;p&gt;Thank you for your attention!&lt;/p&gt;&lt;p&gt;Best regards,&lt;br&gt;Health Information Systems&lt;/p&gt;&lt;br /&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;"
 }
 );</camunda:script>
               </camunda:inputParameter>
@@ -272,7 +284,30 @@ exists=(object.message.toLowerCase() === 'true');</camunda:script>
     <bpmn:intermediateThrowEvent id="Event_0kdfx8h" name="show available pharmacy">
       <bpmn:incoming>Flow_151krjz</bpmn:incoming>
       <bpmn:outgoing>Flow_0sr3ab3</bpmn:outgoing>
-      <bpmn:messageEventDefinition id="MessageEventDefinition_125taiy" />
+      <bpmn:messageEventDefinition id="MessageEventDefinition_125taiy">
+        <bpmn:extensionElements>
+          <camunda:connector>
+            <camunda:inputOutput>
+              <camunda:inputParameter name="headers">
+                <camunda:map>
+                  <camunda:entry key="Content-Type">application/json</camunda:entry>
+                </camunda:map>
+              </camunda:inputParameter>
+              <camunda:inputParameter name="method">POST</camunda:inputParameter>
+              <camunda:inputParameter name="payload">
+                <camunda:script scriptFormat="JavaScript">out = JSON.stringify(
+{
+    "emailRecepient": recepientEmail,
+    "html": "&lt;!DOCTYPE html&gt;&lt;html lang='en'&gt;&lt;head&gt;&lt;meta charset='UTF-8'&gt;&lt;meta name='viewport' content='width=device-width, initial-scale=1.0'&gt;&lt;title&gt;Notification: Prescription Automation&lt;/title&gt;&lt;style&gt;body {font-family: Arial, sans-serif;margin: 0;padding: 0;background-color: #f4f4f4;}.container {max-width: 600px;margin: 20px auto;padding: 20px;background-color: #ffffff;box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);}h1 {color: #333333;}p {color: #555555;}.cta-button {display: inline-block;padding: 10px 20px;background-color: #3498db;color: #ffffff;text-decoration: none;border-radius: 5px;}&lt;/style&gt;&lt;/head&gt;&lt;body&gt;&lt;div class='container'&gt;&lt;h1&gt;Notification: Prescription Automation&lt;/h1&gt;&lt;p&gt;Hello "+patient_name+",&lt;/p&gt;&lt;p&gt;"+message+"&lt;/p&gt;&lt;p&gt;Thank you for your attention!&lt;/p&gt;&lt;p&gt;Best regards,&lt;br&gt;Health Information Systems&lt;/p&gt;&lt;br /&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;"
+}
+);</camunda:script>
+              </camunda:inputParameter>
+              <camunda:inputParameter name="url">https://hook.eu2.make.com/rmg4nu7cblde8y8us4jukd85om7g1x48</camunda:inputParameter>
+            </camunda:inputOutput>
+            <camunda:connectorId>http-connector</camunda:connectorId>
+          </camunda:connector>
+        </bpmn:extensionElements>
+      </bpmn:messageEventDefinition>
     </bpmn:intermediateThrowEvent>
     <bpmn:userTask id="Activity_0xcbwj8" name="show chosen pharmacy">
       <bpmn:incoming>Flow_06m5b85</bpmn:incoming>
