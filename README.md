@@ -7,9 +7,9 @@
 | Names  | Emails |
 | ------------- | ------------- |
 | Sebastian Fernandez | sebastian.fernandez@students.fhnw.ch |
-| Chen Bojana | bojana.chen@students.fhnw.ch |
-| Romeny Gerardo | gerardo.romenykunstmann@students.fhnw.ch |
-| Hardegger Magdalena  | magdalena.hardegger@students.fhnw.ch  |
+| Bojana Chen | bojana.chen@students.fhnw.ch |
+| Gerardo Romeny | gerardo.romenykunstmann@students.fhnw.ch |
+| Magdalena Hardegger | magdalena.hardegger@students.fhnw.ch |
 
 ## Links 🔗
 - API: [DeepNote](https://deepnote.com/workspace/daught-90c8f362-c010-4677-9f84-fd2c734b75ff/project/Sebastians-Untitled-project-927aa70e-3479-4236-ae8d-88111fb4fd4f/notebook/EHR-System-6c884184676d4ab89132c5ffc9ce726a?) (Version Sebastian 11.15.2023)
