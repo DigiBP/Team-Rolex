@@ -11,9 +11,9 @@
     <bpmn:messageFlow id="Flow_1nbasya" sourceRef="Event_1ytwpnp" targetRef="Participant_1wlli3m" />
     <bpmn:messageFlow id="Flow_1tr2dly" sourceRef="Activity_0szly2o" targetRef="Participant_1wlli3m" />
     <bpmn:messageFlow id="Flow_0i8a49x" sourceRef="Event_1ytwpnp" targetRef="Participant_1wppqnx" />
-    <bpmn:messageFlow id="Flow_1gzlyzj" sourceRef="Event_16soh1s" targetRef="Participant_1490p9m" />
-    <bpmn:messageFlow id="Flow_172nmhs" sourceRef="Event_16soh1s" targetRef="Participant_1wlli3m" />
-    <bpmn:messageFlow id="Flow_1668rao" sourceRef="Event_0kdfx8h" targetRef="Participant_1490p9m" />
+    <bpmn:messageFlow id="Flow_1gzlyzj" sourceRef="Event_cancellation" targetRef="Participant_1490p9m" />
+    <bpmn:messageFlow id="Flow_172nmhs" sourceRef="Event_cancellation" targetRef="Participant_1wlli3m" />
+    <bpmn:messageFlow id="Flow_1668rao" sourceRef="Event_show_pharmacy" targetRef="Participant_1490p9m" />
   </bpmn:collaboration>
   <bpmn:process id="Process_EHR-System-Rolex" isExecutable="true" camunda:historyTimeToLive="180">
     <bpmn:startEvent id="Message_NewPrescription" name="NewPrescription">
@@ -31,7 +31,7 @@
     <bpmn:sequenceFlow id="Flow_045l2ov" name="yes" sourceRef="Gateway_checkduplicate" targetRef="Gateway_0316i4o">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${execution.getVariable('has_duplicate') == true}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_13kt9y9" sourceRef="Activity_0szly2o" targetRef="Event_16soh1s" />
+    <bpmn:sequenceFlow id="Flow_13kt9y9" sourceRef="Activity_0szly2o" targetRef="Event_cancellation" />
     <bpmn:sequenceFlow id="Flow_0mwnfqu" name="yes" sourceRef="Gateway_checkInteractions" targetRef="Gateway_0316i4o">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${execution.getVariable('has_interactions') == true}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
@@ -143,9 +143,9 @@ message=object.message;</camunda:script>
     <bpmn:sequenceFlow id="Flow_0w81av3" name="no" sourceRef="Gateway_checkInteractions" targetRef="Activity_updateHealthInformation">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${execution.getVariable('has_interactions') == false}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_151krjz" sourceRef="Activity_updateHealthInformation" targetRef="Event_0kdfx8h" />
+    <bpmn:sequenceFlow id="Flow_151krjz" sourceRef="Activity_updateHealthInformation" targetRef="Event_show_pharmacy" />
     <bpmn:sequenceFlow id="Flow_06m5b85" sourceRef="Event_0q3b93h" targetRef="Activity_0xcbwj8" />
-    <bpmn:sequenceFlow id="Flow_0sr3ab3" sourceRef="Event_0kdfx8h" targetRef="Event_0q3b93h" />
+    <bpmn:sequenceFlow id="Flow_0sr3ab3" sourceRef="Event_show_pharmacy" targetRef="Event_0q3b93h" />
     <bpmn:sequenceFlow id="Flow_10jlmpq" sourceRef="Activity_check_interactions" targetRef="Gateway_checkInteractions" />
     <bpmn:exclusiveGateway id="Gateway_patientExists" name="exists?">
       <bpmn:incoming>Flow_1irgwfz</bpmn:incoming>
@@ -249,7 +249,7 @@ message=object.message;</camunda:script>
       <bpmn:incoming>Flow_0kjrsoo</bpmn:incoming>
       <bpmn:outgoing>Flow_13kt9y9</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:endEvent id="Event_16soh1s" name="Cancellation sent">
+    <bpmn:endEvent id="Event_cancellation" name="Cancellation sent">
       <bpmn:extensionElements />
       <bpmn:incoming>Flow_13kt9y9</bpmn:incoming>
       <bpmn:messageEventDefinition id="MessageEventDefinition_1pu4ris">
@@ -281,7 +281,7 @@ message=object.message;</camunda:script>
       <bpmn:incoming>Flow_1rozf58</bpmn:incoming>
       <bpmn:messageEventDefinition id="MessageEventDefinition_17w5boo" />
     </bpmn:intermediateThrowEvent>
-    <bpmn:intermediateThrowEvent id="Event_0kdfx8h" name="show available pharmacy">
+    <bpmn:intermediateThrowEvent id="Event_show_pharmacy" name="show available pharmacy">
       <bpmn:incoming>Flow_151krjz</bpmn:incoming>
       <bpmn:outgoing>Flow_0sr3ab3</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_125taiy">
@@ -408,7 +408,7 @@ recipientEmail: string</bpmn:text>
         <dc:Bounds x="690" y="690" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1glzafd_di" bpmnElement="Event_16soh1s">
+      <bpmndi:BPMNShape id="Event_1glzafd_di" bpmnElement="Event_cancellation">
         <dc:Bounds x="492" y="712" width="36" height="36" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="396" y="723" width="86" height="14" />
@@ -420,7 +420,7 @@ recipientEmail: string</bpmn:text>
           <dc:Bounds x="1697" y="485" width="85" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0kdfx8h_di" bpmnElement="Event_0kdfx8h">
+      <bpmndi:BPMNShape id="Event_0kdfx8h_di" bpmnElement="Event_show_pharmacy">
         <dc:Bounds x="1412" y="522" width="36" height="36" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="1394" y="565" width="73" height="27" />
