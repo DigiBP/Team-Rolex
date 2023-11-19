@@ -29,7 +29,7 @@
 ## Goal 🎯
 
 ## Current As-Is Process
-![](./EHR-System-Rolex-asIs.png)
+![](./static/img/EHR-System-Rolex-asIs.png)
 
 
 ___________
@@ -39,7 +39,7 @@ ___________
 ___________
 
 ## To-Be Process
-![](./EHR-System-Rolex-toBe.png)
+![](./static/img/EHR-System-Rolex-toBe.png)
 
 
 ### Benefits ✔️
