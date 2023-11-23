@@ -352,10 +352,6 @@ recipientEmail: string</bpmn:text>
         <dc:Bounds x="189" y="300" width="1651" height="510" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_119kmu7_di" bpmnElement="TextAnnotation_119kmu7">
-        <dc:Bounds x="228" y="388" width="142" height="81" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_0ocst8t" bpmnElement="Message_NewPrescription">
         <dc:Bounds x="252" y="522" width="36" height="36" />
         <bpmndi:BPMNLabel>
@@ -459,11 +455,15 @@ recipientEmail: string</bpmn:text>
         <dc:Bounds x="540" y="428" width="147.993760757315" height="40.99881669535284" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_119kmu7_di" bpmnElement="TextAnnotation_119kmu7">
+        <dc:Bounds x="228" y="388" width="142" height="81" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_045l2ov_di" bpmnElement="Flow_045l2ov">
         <di:waypoint x="940" y="565" />
         <di:waypoint x="940" y="615" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="947" y="589.0000000000006" width="17" height="14" />
+          <dc:Bounds x="947" y="589" width="17" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_13kt9y9_di" bpmnElement="Flow_13kt9y9">
