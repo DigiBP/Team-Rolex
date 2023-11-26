@@ -5,17 +5,15 @@
     <bpmn:participant id="Participant_1490p9m" name="Patient" />
     <bpmn:participant id="Participant_1wlli3m" name="Practitioner" />
     <bpmn:participant id="Participant_1wppqnx" name="Pharmacy" />
-    <bpmn:messageFlow id="Flow_1heqwhf" sourceRef="Participant_1490p9m" targetRef="pharmacy_choosen">
-      <bpmn:extensionElements />
-    </bpmn:messageFlow>
-    <bpmn:messageFlow id="Flow_06o7zj1" sourceRef="Event_Patient_Confirmation_Email" targetRef="Participant_1490p9m" />
+    <bpmn:messageFlow id="Flow_06o7zj1" sourceRef="Event_1ytwpnp" targetRef="Participant_1490p9m" />
     <bpmn:messageFlow id="Flow_1flwhsj" sourceRef="Participant_1wlli3m" targetRef="Message_NewPrescription" />
+    <bpmn:messageFlow id="Flow_1nbasya" sourceRef="Event_1ytwpnp" targetRef="Participant_1wlli3m" />
     <bpmn:messageFlow id="Flow_1tr2dly" sourceRef="Activity_0szly2o" targetRef="Participant_1wlli3m" />
-    <bpmn:messageFlow id="Flow_0i8a49x" sourceRef="Event_Pharmacy_Confirmation_Email" targetRef="Participant_1wppqnx" />
+    <bpmn:messageFlow id="Flow_0i8a49x" sourceRef="Event_1ytwpnp" targetRef="Participant_1wppqnx" />
     <bpmn:messageFlow id="Flow_1gzlyzj" sourceRef="Event_cancellation" targetRef="Participant_1490p9m" />
     <bpmn:messageFlow id="Flow_172nmhs" sourceRef="Event_cancellation" targetRef="Participant_1wlli3m" />
     <bpmn:messageFlow id="Flow_1668rao" sourceRef="Event_show_pharmacy" targetRef="Participant_1490p9m" />
-    <bpmn:messageFlow id="Flow_1b7bng7" sourceRef="Event_0d7u23d" targetRef="Participant_1wlli3m" />
+    <bpmn:messageFlow id="Flow_102iawg" sourceRef="Participant_1490p9m" targetRef="NewPharmacy" />
   </bpmn:collaboration>
   <bpmn:process id="Process_EHR-System-Rolex" isExecutable="true" camunda:historyTimeToLive="180">
     <bpmn:startEvent id="Message_NewPrescription" name="NewPrescription">
@@ -25,11 +23,10 @@
           <camunda:formField id="birthday" label="birthday" type="string" />
           <camunda:formField id="prescription" label="prescription" type="string" />
           <camunda:formField id="recepientEmail" label="recepientEmail" type="string" />
-          <camunda:formField id="email_patient" label="email_patient" type="string" />
         </camunda:formData>
       </bpmn:extensionElements>
       <bpmn:outgoing>Flow_055q89v</bpmn:outgoing>
-      <bpmn:messageEventDefinition id="MessageEventDefinition_0q207gn" messageRef="Message_2uparmc" />
+      <bpmn:messageEventDefinition id="MessageEventDefinition_0q207gn" messageRef="Message_1p7oegj" />
     </bpmn:startEvent>
     <bpmn:sequenceFlow id="Flow_045l2ov" name="yes" sourceRef="Gateway_checkduplicate" targetRef="Gateway_0316i4o">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${execution.getVariable('has_duplicate') == true}</bpmn:conditionExpression>
@@ -77,8 +74,7 @@
 {  
     "patient_name": patient_name,
     "birthday": birthday,
-    "prescription": prescription,
-    "process_instance_id": process_instance_id
+    "prescription": prescription
 }
 );</camunda:script>
             </camunda:inputParameter>
@@ -110,8 +106,7 @@ message=object.message;</camunda:script>
 {  
     "patient_name": patient_name,
     "birthday": birthday,
-    "prescription": prescription,
-    "process_instance_id": process_instance_id
+    "prescription": prescription
 }
 );</camunda:script>
             </camunda:inputParameter>
@@ -140,6 +135,7 @@ message=object.message;</camunda:script>
       <bpmn:incoming>Flow_patient_exists</bpmn:incoming>
       <bpmn:outgoing>Flow_1ta315f</bpmn:outgoing>
     </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1rozf58" sourceRef="Activity_0xcbwj8" targetRef="Event_1ytwpnp" />
     <bpmn:sequenceFlow id="Flow_1ta315f" sourceRef="Activity_check_duplication" targetRef="Gateway_checkduplicate" />
     <bpmn:sequenceFlow id="Flow_0mhs0li" name="no" sourceRef="Gateway_checkduplicate" targetRef="Activity_check_interactions">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${execution.getVariable('has_duplicate') == false}</bpmn:conditionExpression>
@@ -148,10 +144,6 @@ message=object.message;</camunda:script>
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${execution.getVariable('has_interactions') == false}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_151krjz" sourceRef="Activity_updateHealthInformation" targetRef="Event_show_pharmacy" />
-    <bpmn:sequenceFlow id="Flow_06m5b85" sourceRef="pharmacy_choosen" targetRef="Activity_fetch_pharmacy_email" />
-    <bpmn:sequenceFlow id="Flow_0sr3ab3" sourceRef="Event_show_pharmacy" targetRef="pharmacy_choosen">
-      <bpmn:extensionElements />
-    </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_10jlmpq" sourceRef="Activity_check_interactions" targetRef="Gateway_checkInteractions" />
     <bpmn:exclusiveGateway id="Gateway_patientExists" name="exists?">
       <bpmn:incoming>Flow_1irgwfz</bpmn:incoming>
@@ -170,8 +162,7 @@ message=object.message;</camunda:script>
 {  
     "patient_name": patient_name,
     "birthday": birthday,
-    "prescription": prescription,
-    "process_instance_id": process_instance_id
+    "prescription": prescription
 }
 );</camunda:script>
             </camunda:inputParameter>
@@ -217,8 +208,7 @@ message=object.message;</camunda:script>
 {  
     "patient_name": patient_name,
     "birthday": birthday,
-    "prescription": prescription,
-    "process_instance_id": process_instance_id
+    "prescription": prescription
 }
 );</camunda:script>
             </camunda:inputParameter>
@@ -264,14 +254,14 @@ message=object.message;</camunda:script>
         <bpmn:extensionElements>
           <camunda:connector>
             <camunda:inputOutput>
-              <camunda:inputParameter name="url">https://hook.eu2.make.com/3nebf17pp6dnxhtsx4h32948get4dcpz</camunda:inputParameter>
+              <camunda:inputParameter name="url">https://hook.eu2.make.com/rmg4nu7cblde8y8us4jukd85om7g1x48</camunda:inputParameter>
               <camunda:inputParameter name="method">POST</camunda:inputParameter>
               <camunda:inputParameter name="payload">
                 <camunda:script scriptFormat="JavaScript">out = JSON.stringify(
-    {
-        "emailRecepient": recepientEmail,
-        "html": "&lt;!DOCTYPE html&gt;&lt;html lang='en'&gt;&lt;head&gt;&lt;meta charset='UTF-8'&gt;&lt;meta name='viewport' content='width=device-width, initial-scale=1.0'&gt;&lt;title&gt;Notification: Prescription Automation&lt;/title&gt;&lt;style&gt;body{font-family:'Arial',sans-serif;margin:0;padding:0;background-color:#f4f4f4;}.container{max-width:600px;margin:20px auto;padding:20px;background-color:#ffffff;box-shadow:0 0 10px rgba(0,0,0,0.1);border-radius:8px;}h1{color:#333333;}p{color:#555555;margin-bottom:15px;}strong{color:#3498db;}.cta-button{display:inline-block;padding:10px 20px;background-color:#3498db;color:#ffffff;text-decoration:none;border-radius:5px;}br{margin-bottom:10px;line-height:0;}&lt;/style&gt;&lt;/head&gt;&lt;body&gt;&lt;div class='container'&gt;&lt;h1&gt;Notification: Prescription Automation&lt;/h1&gt;&lt;p&gt;Hello &lt;strong&gt;" + recepientEmail + "&lt;/strong&gt;,&lt;/p&gt;&lt;p&gt;" + message + "&lt;/p&gt;&lt;p&gt;Process Instance ID: " + process_instance_id + "&lt;/p&gt;&lt;p&gt;Thank you for your attention!&lt;/p&gt;&lt;p&gt;Best regards,&lt;br&gt;Health Information Systems&lt;/p&gt;&lt;br /&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;"
-    }
+{
+    "emailRecepient": recepientEmail,
+    "html": "&lt;!DOCTYPE html&gt;&lt;html lang='en'&gt;&lt;head&gt;&lt;meta charset='UTF-8'&gt;&lt;meta name='viewport' content='width=device-width, initial-scale=1.0'&gt;&lt;title&gt;Notification: Prescription Automation&lt;/title&gt;&lt;style&gt;body {font-family: Arial, sans-serif;margin: 0;padding: 0;background-color: #f4f4f4;}.container {max-width: 600px;margin: 20px auto;padding: 20px;background-color: #ffffff;box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);}h1 {color: #333333;}p {color: #555555;}.cta-button {display: inline-block;padding: 10px 20px;background-color: #3498db;color: #ffffff;text-decoration: none;border-radius: 5px;}&lt;/style&gt;&lt;/head&gt;&lt;body&gt;&lt;div class='container'&gt;&lt;h1&gt;Notification: Prescription Automation&lt;/h1&gt;&lt;p&gt;Hello "+patient_name+",&lt;/p&gt;&lt;p&gt;"+message+"&lt;/p&gt;&lt;p&gt;Thank you for your attention!&lt;/p&gt;&lt;p&gt;Best regards,&lt;br&gt;Health Information Systems&lt;/p&gt;&lt;br /&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;"
+}
 );</camunda:script>
               </camunda:inputParameter>
               <camunda:inputParameter name="headers">
@@ -285,9 +275,12 @@ message=object.message;</camunda:script>
         </bpmn:extensionElements>
       </bpmn:messageEventDefinition>
     </bpmn:endEvent>
-    <bpmn:intermediateThrowEvent id="Event_show_pharmacy" name="patient choose pharmacy email">
+    <bpmn:intermediateThrowEvent id="Event_1ytwpnp" name="confirmation sent">
+      <bpmn:incoming>Flow_1rozf58</bpmn:incoming>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_17w5boo" />
+    </bpmn:intermediateThrowEvent>
+    <bpmn:intermediateThrowEvent id="Event_show_pharmacy" name="show available pharmacy">
       <bpmn:incoming>Flow_151krjz</bpmn:incoming>
-      <bpmn:outgoing>Flow_0sr3ab3</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_125taiy">
         <bpmn:extensionElements>
           <camunda:connector>
@@ -300,10 +293,10 @@ message=object.message;</camunda:script>
               <camunda:inputParameter name="method">POST</camunda:inputParameter>
               <camunda:inputParameter name="payload">
                 <camunda:script scriptFormat="JavaScript">out = JSON.stringify(
-    {
-        "emailRecepient": recepientEmail,
-        "html": "&lt;!DOCTYPE html&gt;&lt;html lang='en'&gt;&lt;head&gt;&lt;meta charset='UTF-8'&gt;&lt;meta name='viewport' content='width=device-width, initial-scale=1.0'&gt;&lt;title&gt;Notification: Prescription Automation&lt;/title&gt;&lt;style&gt;body{font-family:'Arial',sans-serif;margin:0;padding:0;background-color:#f4f4f4;}.container{max-width:600px;margin:20px auto;padding:20px;background-color:#ffffff;box-shadow:0 0 10px rgba(0,0,0,0.1);border-radius:8px;}h1{color:#333333;}p{color:#555555;margin-bottom:15px;}strong{color:#3498db;}.cta-button{display:inline-block;padding:10px 20px;background-color:#3498db;color:#ffffff;text-decoration:none;border-radius:5px;}br{margin-bottom:10px;line-height:0;}&lt;/style&gt;&lt;/head&gt;&lt;body&gt;&lt;div class='container'&gt;&lt;h1&gt;Notification: Prescription Automation&lt;/h1&gt;&lt;p&gt;Hello &lt;strong&gt;" + recepientEmail + "&lt;/strong&gt;,&lt;/p&gt;&lt;p&gt;" + message + "&lt;/p&gt;&lt;p&gt;Process Instance ID: " + process_instance_id + "&lt;/p&gt;&lt;p&gt;Thank you for your attention!&lt;/p&gt;&lt;p&gt;Best regards,&lt;br&gt;Health Information Systems&lt;/p&gt;&lt;br /&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;"
-    }
+{
+    "emailRecepient": recepientEmail,
+    "html": "&lt;!DOCTYPE html&gt;&lt;html lang='en'&gt;&lt;head&gt;&lt;meta charset='UTF-8'&gt;&lt;meta name='viewport' content='width=device-width, initial-scale=1.0'&gt;&lt;title&gt;Notification: Prescription Automation&lt;/title&gt;&lt;style&gt;body {font-family: Arial, sans-serif;margin: 0;padding: 0;background-color: #f4f4f4;}.container {max-width: 600px;margin: 20px auto;padding: 20px;background-color: #ffffff;box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);}h1 {color: #333333;}p {color: #555555;}.cta-button {display: inline-block;padding: 10px 20px;background-color: #3498db;color: #ffffff;text-decoration: none;border-radius: 5px;}&lt;/style&gt;&lt;/head&gt;&lt;body&gt;&lt;div class='container'&gt;&lt;h1&gt;Notification: Prescription Automation&lt;/h1&gt;&lt;p&gt;Hello "+patient_name+",&lt;/p&gt;&lt;p&gt;"+message+"&lt;/p&gt;&lt;p&gt;Thank you for your attention!&lt;/p&gt;&lt;p&gt;Best regards,&lt;br&gt;Health Information Systems&lt;/p&gt;&lt;br /&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;"
+}
 );</camunda:script>
               </camunda:inputParameter>
               <camunda:inputParameter name="url">https://hook.eu2.make.com/rmg4nu7cblde8y8us4jukd85om7g1x48</camunda:inputParameter>
@@ -313,157 +306,26 @@ message=object.message;</camunda:script>
         </bpmn:extensionElements>
       </bpmn:messageEventDefinition>
     </bpmn:intermediateThrowEvent>
-    <bpmn:intermediateCatchEvent id="pharmacy_choosen" name="Pharmacy Choosen">
+    <bpmn:userTask id="Activity_0xcbwj8" name="show chosen pharmacy">
+      <bpmn:incoming>Flow_034cwcw</bpmn:incoming>
+      <bpmn:outgoing>Flow_1rozf58</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:startEvent id="NewPharmacy" name="NewPharmacy">
       <bpmn:extensionElements>
-        <camunda:executionListener expression="" event="start" />
-        <camunda:executionListener expression="$(expression.getVariables(&#34;processInstanceID&#34;)" event="start" />
+        <camunda:formData businessKey="pharmacy">
+          <camunda:formField id="pharmacy" label="pharmacy" />
+        </camunda:formData>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0sr3ab3</bpmn:incoming>
-      <bpmn:outgoing>Flow_06m5b85</bpmn:outgoing>
-      <bpmn:messageEventDefinition id="MessageEventDefinition_0izidlr" messageRef="Message_04dr7hn" />
-    </bpmn:intermediateCatchEvent>
-    <bpmn:sequenceFlow id="Flow_1ibxpzn" sourceRef="Activity_fetch_pharmacy_email" targetRef="Gateway_02lazy2" />
-    <bpmn:sequenceFlow id="Flow_02yk9lq" sourceRef="Gateway_02lazy2" targetRef="Event_Patient_Confirmation_Email" />
-    <bpmn:sequenceFlow id="Flow_0qda2jp" sourceRef="Gateway_02lazy2" targetRef="Event_Pharmacy_Confirmation_Email" />
-    <bpmn:sequenceFlow id="Flow_01vai98" sourceRef="Gateway_02lazy2" targetRef="Event_0d7u23d" />
-    <bpmn:endEvent id="Event_Patient_Confirmation_Email" name="patient confirmation email">
-      <bpmn:incoming>Flow_02yk9lq</bpmn:incoming>
-      <bpmn:messageEventDefinition id="MessageEventDefinition_1c4zodi">
-        <bpmn:extensionElements>
-          <camunda:connector>
-            <camunda:inputOutput>
-              <camunda:inputParameter name="header">
-                <camunda:map>
-                  <camunda:entry key="Content-Type">application/json</camunda:entry>
-                </camunda:map>
-              </camunda:inputParameter>
-              <camunda:inputParameter name="method">POST</camunda:inputParameter>
-              <camunda:inputParameter name="payload">
-                <camunda:script scriptFormat="JavaScript">out = JSON.stringify(
-    {
-        "emailRecepient": recepientEmail,
-        "html": "&lt;!DOCTYPE html&gt;&lt;html lang='en'&gt;&lt;head&gt;&lt;meta charset='UTF-8'&gt;&lt;meta name='viewport' content='width=device-width, initial-scale=1.0'&gt;&lt;title&gt;Notification: Prescription Automation&lt;/title&gt;&lt;style&gt;body{font-family:'Arial',sans-serif;margin:0;padding:0;background-color:#f4f4f4;}.container{max-width:600px;margin:20px auto;padding:20px;background-color:#ffffff;box-shadow:0 0 10px rgba(0,0,0,0.1);border-radius:8px;}h1{color:#333333;}p{color:#555555;margin-bottom:15px;}strong{color:#3498db;}.cta-button{display:inline-block;padding:10px 20px;background-color:#3498db;color:#ffffff;text-decoration:none;border-radius:5px;}br{margin-bottom:10px;line-height:0;}&lt;/style&gt;&lt;/head&gt;&lt;body&gt;&lt;div class='container'&gt;&lt;h1&gt;Notification: Prescription Automation&lt;/h1&gt;&lt;p&gt;Hello &lt;strong&gt;" + patient_name + "&lt;/strong&gt;,&lt;/p&gt;&lt;p&gt;Thank you for submitting the form. We have received your message and informed the pharmacy of your choice to pick up your medication.&lt;/p&gt;&lt;p&gt;Your request is being processed, and you will be notified once your medication is ready for collection.&lt;/p&gt;&lt;p&gt;We appreciate your prompt response and cooperation. If you have any further questions or concerns, please feel free to contact us.&lt;/p&gt;&lt;p&gt;Process Instance ID: " + process_instance_id + "&lt;/p&gt;&lt;p&gt;Thank you for your attention!&lt;/p&gt;&lt;p&gt;Best regards,&lt;br&gt;Health Information Systems&lt;/p&gt;&lt;br /&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;"
-    }
-);</camunda:script>
-              </camunda:inputParameter>
-              <camunda:inputParameter name="url">https://hook.eu2.make.com/1bdm8ua473crc0hox2ws8n2l9rlcrb7i</camunda:inputParameter>
-            </camunda:inputOutput>
-            <camunda:connectorId>http-connector</camunda:connectorId>
-          </camunda:connector>
-        </bpmn:extensionElements>
-      </bpmn:messageEventDefinition>
-    </bpmn:endEvent>
-    <bpmn:endEvent id="Event_0d7u23d" name="doctor confirmation email">
-      <bpmn:incoming>Flow_01vai98</bpmn:incoming>
-      <bpmn:messageEventDefinition id="MessageEventDefinition_1oumpom">
-        <bpmn:extensionElements>
-          <camunda:connector>
-            <camunda:inputOutput>
-              <camunda:inputParameter name="header">
-                <camunda:map>
-                  <camunda:entry key="Content-Type">application/json</camunda:entry>
-                </camunda:map>
-              </camunda:inputParameter>
-              <camunda:inputParameter name="method">POST</camunda:inputParameter>
-              <camunda:inputParameter name="payload">
-                <camunda:script scriptFormat="JavaScript">out = JSON.stringify(
-    {
-        "emailRecepient": email_doctor,
-        "html": "&lt;!DOCTYPE html&gt;&lt;html lang='en'&gt;&lt;head&gt;&lt;meta charset='UTF-8'&gt;&lt;meta name='viewport' content='width=device-width, initial-scale=1.0'&gt;&lt;title&gt;Notification: Prescription Automation&lt;/title&gt;&lt;style&gt;body{font-family:'Arial',sans-serif;margin:0;padding:0;background-color:#f4f4f4;}.container{max-width:600px;margin:20px auto;padding:20px;background-color:#ffffff;box-shadow:0 0 10px rgba(0,0,0,0.1);border-radius:8px;}h1{color:#333333;}p{color:#555555;margin-bottom:15px;}strong{color:#3498db;}.cta-button{display:inline-block;padding:10px 20px;background-color:#3498db;color:#ffffff;text-decoration:none;border-radius:5px;}br{margin-bottom:10px;line-height:0;}&lt;/style&gt;&lt;/head&gt;&lt;body&gt;&lt;div class='container'&gt;&lt;h1&gt;Prescription Automation&lt;/h1&gt;&lt;p&gt;Hello &lt;strong&gt;" + email_doctor + "&lt;/strong&gt;,&lt;/p&gt;&lt;p&gt;&lt;p&gt;&lt;p&gt;We hope this message finds you well.&lt;/p&gt;&lt;p&gt;We are pleased to inform you that your patient, "+patient_name+", has successfully completed the necessary processes for the prescription "+prescription+". The pharmacy ("+email_pharmacy+") has been duly informed and is now aware of the patient's readiness to pick up their medication.&lt;/p&gt;&lt;p&gt;Should you have any specific instructions or if there are further details you'd like to provide regarding the patient's medication, please feel free to reach out to us.&lt;/p&gt;&lt;p&gt;Thank you for your attention to this matter, and we appreciate your collaboration in ensuring the smooth healthcare process for your patients.&lt;/p&gt;&lt;br /&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;"
-    }
-);</camunda:script>
-              </camunda:inputParameter>
-              <camunda:inputParameter name="url">https://hook.eu2.make.com/1bdm8ua473crc0hox2ws8n2l9rlcrb7i</camunda:inputParameter>
-            </camunda:inputOutput>
-            <camunda:connectorId>http-connector</camunda:connectorId>
-          </camunda:connector>
-        </bpmn:extensionElements>
-      </bpmn:messageEventDefinition>
-    </bpmn:endEvent>
-    <bpmn:serviceTask id="Activity_fetch_pharmacy_email" name="Fetch Pharmacy Email">
-      <bpmn:extensionElements>
-        <camunda:connector>
-          <camunda:inputOutput>
-            <camunda:inputParameter name="url">https://927aa70e-3479-4236-ae8d-88111fb4fd4f.deepnoteproject.com/confirmation/email</camunda:inputParameter>
-            <camunda:inputParameter name="payload">
-              <camunda:script scriptFormat="JavaScript">out = JSON.stringify(
-{  
-    "patient_name": patient_name,
-    "birthday": birthday,
-    "prescription": prescription,
-    "pharmacych": pharmacych,
-    "email_patient": email_patient,
-    "email_doctor": recepientEmail
-}
-);</camunda:script>
-            </camunda:inputParameter>
-            <camunda:inputParameter name="method">POST</camunda:inputParameter>
-            <camunda:inputParameter name="headers">
-              <camunda:map>
-                <camunda:entry key="Content-Type">application/json</camunda:entry>
-              </camunda:map>
-            </camunda:inputParameter>
-            <camunda:outputParameter name="email_doctor">
-              <camunda:script scriptFormat="JavaScript">object=JSON.parse(response);
-email_doctor=object.email_doctor;</camunda:script>
-            </camunda:outputParameter>
-            <camunda:outputParameter name="headers">
-              <camunda:map>
-                <camunda:entry key="Content-Type">application/json</camunda:entry>
-              </camunda:map>
-            </camunda:outputParameter>
-            <camunda:outputParameter name="email_patient">
-              <camunda:script scriptFormat="JavaScript">object=JSON.parse(response);
-email_patient=object.email_patient;</camunda:script>
-            </camunda:outputParameter>
-            <camunda:outputParameter name="email_pharmacy">
-              <camunda:script scriptFormat="JavaScript">object=JSON.parse(response);
-email_pharmacy=object.email_pharmacy;</camunda:script>
-            </camunda:outputParameter>
-            <camunda:outputParameter name="email_content">
-              <camunda:script scriptFormat="JavaScript">object=JSON.parse(response);
-email_content=object.email_content;</camunda:script>
-            </camunda:outputParameter>
-          </camunda:inputOutput>
-          <camunda:connectorId>http-connector</camunda:connectorId>
-        </camunda:connector>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_06m5b85</bpmn:incoming>
-      <bpmn:outgoing>Flow_1ibxpzn</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:parallelGateway id="Gateway_02lazy2">
-      <bpmn:incoming>Flow_1ibxpzn</bpmn:incoming>
-      <bpmn:outgoing>Flow_02yk9lq</bpmn:outgoing>
-      <bpmn:outgoing>Flow_0qda2jp</bpmn:outgoing>
-      <bpmn:outgoing>Flow_01vai98</bpmn:outgoing>
-    </bpmn:parallelGateway>
-    <bpmn:endEvent id="Event_Pharmacy_Confirmation_Email" name="pharmacy confirmation email">
-      <bpmn:incoming>Flow_0qda2jp</bpmn:incoming>
-      <bpmn:messageEventDefinition id="MessageEventDefinition_0za7yg2">
-        <bpmn:extensionElements>
-          <camunda:connector>
-            <camunda:inputOutput>
-              <camunda:inputParameter name="header">
-                <camunda:map>
-                  <camunda:entry key="Content-Type">application/json</camunda:entry>
-                </camunda:map>
-              </camunda:inputParameter>
-              <camunda:inputParameter name="method">POST</camunda:inputParameter>
-              <camunda:inputParameter name="payload">
-                <camunda:script scriptFormat="JavaScript">out = JSON.stringify(
-    {
-        "emailRecepient": email_pharmacy,
-        "html": "&lt;!DOCTYPE html&gt;&lt;html lang='en'&gt;&lt;head&gt;&lt;meta charset='UTF-8'&gt;&lt;meta name='viewport' content='width=device-width, initial-scale=1.0'&gt;&lt;title&gt;Notification: Prescription Automation&lt;/title&gt;&lt;style&gt;body{font-family:'Arial',sans-serif;margin:0;padding:0;background-color:#f4f4f4;}.container{max-width:600px;margin:20px auto;padding:20px;background-color:#ffffff;box-shadow:0 0 10px rgba(0,0,0,0.1);border-radius:8px;}h1{color:#333333;}p{color:#555555;margin-bottom:15px;}strong{color:#3498db;}.cta-button{display:inline-block;padding:10px 20px;background-color:#3498db;color:#ffffff;text-decoration:none;border-radius:5px;}br{margin-bottom:10px;line-height:0;}&lt;/style&gt;&lt;/head&gt;&lt;body&gt;&lt;div class='container'&gt;&lt;h1&gt;Medication Preparation Notification&lt;/h1&gt;&lt;p&gt;Hello &lt;strong&gt;" + recepientEmail + "&lt;/strong&gt;,&lt;/p&gt;&lt;p&gt;&lt;p&gt;&lt;p&gt;Dear Pharmacy Team,&lt;/p&gt;&lt;p&gt;We trust this message finds you well.&lt;/p&gt;&lt;p&gt;We would like to inform you that the following patient is scheduled to pick up their medication soon:&lt;/p&gt;&lt;strong&gt;  - Patient Name:&lt;/strong&gt; "+patient_name+"&lt;strong&gt;&lt;br /&gt;  - Patient Email:&lt;/strong&gt; "+email_patient+"&lt;strong&gt;&lt;br /&gt;  - Patient Birthday:&lt;/strong&gt; "+birthday+"&lt;br /&gt;&lt;strong&gt;  - Prescription:&lt;/strong&gt;"+prescription+"&lt;strong&gt;&lt;br /&gt;  - Doctor Email:&lt;/strong&gt; "+email_doctor+"&lt;br /&gt;&lt;p&gt;Please ensure that the medication is prepared and ready for dispensation. If there are any specific instructions or details you require, do not hesitate to reach out.&lt;/p&gt;&lt;p&gt;We appreciate your prompt attention to this matter and your commitment to providing quality healthcare services.&lt;/p&gt;&lt;p&gt;Thank you for your attention!&lt;/p&gt;&lt;p&gt;Best regards,&lt;br&gt;Health Information Systems&lt;/p&gt;&lt;br /&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;"
-    }
-);</camunda:script>
-              </camunda:inputParameter>
-              <camunda:inputParameter name="url">https://hook.eu2.make.com/1bdm8ua473crc0hox2ws8n2l9rlcrb7i</camunda:inputParameter>
-            </camunda:inputOutput>
-            <camunda:connectorId>http-connector</camunda:connectorId>
-          </camunda:connector>
-        </bpmn:extensionElements>
-      </bpmn:messageEventDefinition>
-    </bpmn:endEvent>
+      <bpmn:outgoing>Flow_034cwcw</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_18o0hka" messageRef="Message_2uparmc" />
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_034cwcw" sourceRef="NewPharmacy" targetRef="Activity_0xcbwj8" />
+    <bpmn:textAnnotation id="TextAnnotation_0y37pby">
+      <bpmn:text>EHR System</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_18ftpve">
+      <bpmn:text>Topic "newPrescription"</bpmn:text>
+    </bpmn:textAnnotation>
     <bpmn:textAnnotation id="TextAnnotation_07nlku7">
       <bpmn:text>Http-Connector [POST] "/patient/check/duplicate"</bpmn:text>
     </bpmn:textAnnotation>
@@ -480,37 +342,16 @@ email_content=object.email_content;</camunda:script>
       <bpmn:text>Form Fields patient_name:string
 birthday:date
 prescription:string
-recipientEmail: string
-patient_email: string
-process_instance_id: string</bpmn:text>
-    </bpmn:textAnnotation>
-    <bpmn:textAnnotation id="TextAnnotation_18ftpve">
-      <bpmn:text>Topic "newPrescription"</bpmn:text>
-    </bpmn:textAnnotation>
-    <bpmn:textAnnotation id="TextAnnotation_0y37pby">
-      <bpmn:text>EHR Automation System</bpmn:text>
+recipientEmail: string</bpmn:text>
     </bpmn:textAnnotation>
   </bpmn:process>
-  <bpmn:message id="Message_1p7oegj" name="PrescriptionReceivedMessages" />
-  <bpmn:message id="Message_2hlug5r" name="pharmacy_1" />
-  <bpmn:message id="Message_2uparmc" name="Message_NewPrescription" />
-  <bpmn:message id="Message_04dr7hn" name="correlation_pharmacy_new_12" />
+  <bpmn:message id="Message_1p7oegj" name="Message_NewPrescription" />
+  <bpmn:message id="Message_2hlug5r" name="pharmacy_choosen" />
+  <bpmn:message id="Message_2uparmc" name="NewPharmacy" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_1069c9c">
       <bpmndi:BPMNShape id="Participant_01zh5yt_di" bpmnElement="Participant_01zh5yt" isHorizontal="true">
-        <dc:Bounds x="120" y="300" width="1840" height="510" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_119kmu7_di" bpmnElement="TextAnnotation_119kmu7">
-        <dc:Bounds x="170" y="380" width="180" height="113" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_18ftpve_di" bpmnElement="TextAnnotation_18ftpve">
-        <dc:Bounds x="346" y="428" width="148" height="41" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_0y37pby_di" bpmnElement="TextAnnotation_0y37pby">
-        <dc:Bounds x="160" y="310" width="200" height="30" />
+        <dc:Bounds x="189" y="300" width="1651" height="510" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_0ocst8t" bpmnElement="Message_NewPrescription">
@@ -571,17 +412,28 @@ process_instance_id: string</bpmn:text>
           <dc:Bounds x="396" y="723" width="86" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1ytwpnp_di" bpmnElement="Event_1ytwpnp">
+        <dc:Bounds x="1712" y="522" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1697" y="485" width="85" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0kdfx8h_di" bpmnElement="Event_show_pharmacy">
         <dc:Bounds x="1412" y="522" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1393" y="565" width="79" height="27" />
+          <dc:Bounds x="1394" y="565" width="73" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0q3b93h_di" bpmnElement="pharmacy_choosen">
-        <dc:Bounds x="1502" y="522" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1547.5" y="526" width="51" height="27" />
-        </bpmndi:BPMNLabel>
+      <bpmndi:BPMNShape id="Activity_0vqd2uq_di" bpmnElement="Activity_0xcbwj8">
+        <dc:Bounds x="1580" y="500" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0y37pby_di" bpmnElement="TextAnnotation_0y37pby">
+        <dc:Bounds x="240" y="310" width="100" height="30" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_18ftpve_di" bpmnElement="TextAnnotation_18ftpve">
+        <dc:Bounds x="370" y="428" width="148" height="41" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_178rfnp" bpmnElement="TextAnnotation_07nlku7">
         <dc:Bounds x="770" y="428" width="170" height="41" />
@@ -599,29 +451,14 @@ process_instance_id: string</bpmn:text>
         <dc:Bounds x="540" y="428" width="147.993760757315" height="40.99881669535284" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0rdju54_di" bpmnElement="Event_Patient_Confirmation_Email">
-        <dc:Bounds x="1762" y="522" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1662" y="529" width="90" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0arrie2" bpmnElement="Event_0d7u23d">
-        <dc:Bounds x="1762" y="742" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1805" y="746" width="90" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_120vi57_di" bpmnElement="Activity_fetch_pharmacy_email">
-        <dc:Bounds x="1600" y="610" width="100" height="80" />
+      <bpmndi:BPMNShape id="TextAnnotation_119kmu7_di" bpmnElement="TextAnnotation_119kmu7">
+        <dc:Bounds x="228" y="388" width="142" height="81" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_02lazy2_di" bpmnElement="Gateway_02lazy2">
-        <dc:Bounds x="1755" y="625" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_19qukb5" bpmnElement="Event_Pharmacy_Confirmation_Email">
-        <dc:Bounds x="1862" y="632" width="36" height="36" />
+      <bpmndi:BPMNShape id="BPMNShape_0sze9qm" bpmnElement="NewPharmacy">
+        <dc:Bounds x="1492" y="522" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1845" y="675.5" width="90" height="27" />
+          <dc:Bounds x="1483" y="503" width="73" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_045l2ov_di" bpmnElement="Flow_045l2ov">
@@ -673,6 +510,10 @@ process_instance_id: string</bpmn:text>
           <dc:Bounds x="703" y="594" width="13" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1rozf58_di" bpmnElement="Flow_1rozf58">
+        <di:waypoint x="1680" y="540" />
+        <di:waypoint x="1712" y="540" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1ta315f_di" bpmnElement="Flow_1ta315f">
         <di:waypoint x="880" y="540" />
         <di:waypoint x="915" y="540" />
@@ -695,15 +536,6 @@ process_instance_id: string</bpmn:text>
         <di:waypoint x="1350" y="540" />
         <di:waypoint x="1412" y="540" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_06m5b85_di" bpmnElement="Flow_06m5b85">
-        <di:waypoint x="1520" y="558" />
-        <di:waypoint x="1520" y="650" />
-        <di:waypoint x="1600" y="650" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0sr3ab3_di" bpmnElement="Flow_0sr3ab3">
-        <di:waypoint x="1448" y="540" />
-        <di:waypoint x="1502" y="540" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_10jlmpq_di" bpmnElement="Flow_10jlmpq">
         <di:waypoint x="1110" y="540" />
         <di:waypoint x="1155" y="540" />
@@ -713,52 +545,40 @@ process_instance_id: string</bpmn:text>
         <di:waypoint x="940" y="730" />
         <di:waypoint x="790" y="730" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1ibxpzn_di" bpmnElement="Flow_1ibxpzn">
-        <di:waypoint x="1700" y="650" />
-        <di:waypoint x="1755" y="650" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_02yk9lq_di" bpmnElement="Flow_02yk9lq">
-        <di:waypoint x="1780" y="625" />
-        <di:waypoint x="1780" y="558" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0qda2jp_di" bpmnElement="Flow_0qda2jp">
-        <di:waypoint x="1805" y="650" />
-        <di:waypoint x="1862" y="650" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_01vai98_di" bpmnElement="Flow_01vai98">
-        <di:waypoint x="1780" y="675" />
-        <di:waypoint x="1780" y="742" />
+      <bpmndi:BPMNEdge id="Flow_034cwcw_di" bpmnElement="Flow_034cwcw">
+        <di:waypoint x="1528" y="540" />
+        <di:waypoint x="1580" y="540" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Participant_0jwj730_di" bpmnElement="Participant_1490p9m" isHorizontal="true">
-        <dc:Bounds x="210" y="200" width="1750" height="60" />
+        <dc:Bounds x="210" y="200" width="1630" height="60" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_02pbizm" bpmnElement="Participant_1wlli3m" isHorizontal="true">
-        <dc:Bounds x="220" y="850" width="1740" height="60" />
+        <dc:Bounds x="220" y="850" width="1620" height="60" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Participant_0adjoeu_di" bpmnElement="Participant_1wppqnx" isHorizontal="true">
-        <dc:Bounds x="210" y="100" width="1750" height="60" />
+        <dc:Bounds x="210" y="100" width="1630" height="60" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Flow_1heqwhf_di" bpmnElement="Flow_1heqwhf">
-        <di:waypoint x="1520" y="260" />
-        <di:waypoint x="1520" y="522" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_06o7zj1_di" bpmnElement="Flow_06o7zj1">
-        <di:waypoint x="1780" y="520" />
-        <di:waypoint x="1780" y="260" />
+        <di:waypoint x="1720" y="525" />
+        <di:waypoint x="1720" y="260" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1flwhsj_di" bpmnElement="Flow_1flwhsj">
         <di:waypoint x="270" y="850" />
         <di:waypoint x="270" y="558" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1nbasya_di" bpmnElement="Flow_1nbasya">
+        <di:waypoint x="1730" y="558" />
+        <di:waypoint x="1730" y="850" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1tr2dly_di" bpmnElement="Flow_1tr2dly">
         <di:waypoint x="740" y="770" />
         <di:waypoint x="740" y="850" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0i8a49x_di" bpmnElement="Flow_0i8a49x">
-        <di:waypoint x="1880" y="632" />
-        <di:waypoint x="1880" y="160" />
+        <di:waypoint x="1740" y="525" />
+        <di:waypoint x="1740" y="160" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1gzlyzj_di" bpmnElement="Flow_1gzlyzj">
         <di:waypoint x="510" y="712" />
@@ -772,9 +592,9 @@ process_instance_id: string</bpmn:text>
         <di:waypoint x="1430" y="522" />
         <di:waypoint x="1430" y="260" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1b7bng7_di" bpmnElement="Flow_1b7bng7">
-        <di:waypoint x="1780" y="778" />
-        <di:waypoint x="1780" y="850" />
+      <bpmndi:BPMNEdge id="Flow_102iawg_di" bpmnElement="Flow_102iawg">
+        <di:waypoint x="1510" y="260" />
+        <di:waypoint x="1510" y="522" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

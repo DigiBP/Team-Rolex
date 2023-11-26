@@ -1,5 +1,3 @@
-# hidden (no-copy-paste area)
-
 import requests
 import csv
 import logging
@@ -10,7 +8,7 @@ app = Flask(__name__)
 
 # Global vars
 #############
-log_file_path = './log5.log'
+log_file_path = './log6.log'
 logging.basicConfig(filename=log_file_path, level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 camunda_api_url = 'https://digibp.herokuapp.com/engine-rest'
@@ -55,7 +53,18 @@ def extractPatientDetailsFromRequest(request_data):
     patient_name = request_data['patient_name']
     patient_birthday = request_data['birthday']
     patient_prescription = request_data['prescription']
-    return patient_name, patient_birthday, patient_prescription
+    process_instance_id = request_data['process_instance_id']
+    return patient_name, patient_birthday, patient_prescription, process_instance_id
+
+def extractConfirmationEmailFromRequest(request_data):    
+    patient_name = request_data['patient_name']    
+    patient_birthday = request_data['birthday']    
+    patient_prescription = request_data['prescription']    
+    pharmacych = request_data['pharmacych']    
+    email_patient = request_data['email_patient']    
+    email_doctor = request_data['email_doctor']    
+    
+    return patient_name, patient_birthday, patient_prescription, email_patient, email_doctor, pharmacych
 
 def generateCheckPatientDataResponse(status, message, patient_name, birthday, prescription):
     value = {
@@ -67,25 +76,23 @@ def generateCheckPatientDataResponse(status, message, patient_name, birthday, pr
     }    
     return json.dumps(value)
 
-def generateCheckDuplicateDataResponse(status, has_duplicate, patient_name, birthday, prescription):
+def generateConfirmationEmailResponse(patient_name, birthday, prescription, email_doctor, email_patient, email_pharmacy, email_content):
     value = {
-        "status": status,        
-        "hasDuplicate": has_duplicate,        
         "patient_name": patient_name,
         "birthday": birthday,
-        "prescription": prescription     
+        "prescription": prescription,
+        "email_doctor": email_doctor,
+        "email_patient": email_patient,
+        "email_pharmacy": email_pharmacy,
+        "email_content": email_content
     }
+    print(value)
     return json.dumps(value)
 
-def generateCheckForInteractionResponse(status, has_interaction, patient_name, birthday, prescription):
-    value = {
-        "status": status,        
-        "hasInteraction": has_interaction,        
-        "patient_name": patient_name,
-        "birthday": birthday,
-        "prescription": prescription   
-    }
-    return json.dumps(value)
+def emailResponseTempalte(method, title, text):
+    return "<p>" + method + " " + title + " </p><p>" + text + "</p>"
+
+
 
 from tempfile import NamedTemporaryFile
 import shutil
@@ -104,17 +111,20 @@ def ehr_app():
 def checkPatientData():
     print("called /patient/check")       
     if request.is_json:
-        name, birthday, prescription = extractPatientDetailsFromRequest(request.json)
+        name, birthday, prescription, process_instance_id = extractPatientDetailsFromRequest(request.json)
         logger.info(f'Processing task for patient: {name}')
+        print("Process instance ID:")
+        print(process_instance_id)
         is_existing_patient = existsPatientInCsv(filepath, name)
         if is_existing_patient:
             logger.info('Patient found.')
-            response = generateCheckPatientDataResponse("ok", "true", name, birthday, prescription)
+            response = generateCheckPatientDataResponse("true", "Patient found", name, birthday, prescription)
             print(response)
             return response, 200
         else:
             logger.info('Patient not found.')
-            response = generateCheckPatientDataResponse("fail", "false", name, birthday, prescription)
+            email_content = emailResponseTempalte("NOT EXISTENT", " - Perscription Canceled", "You are not registered to the EHR System and thus not allowed to use it.")
+            response = generateCheckPatientDataResponse("false", email_content, name, birthday, prescription)
             print(response)
             return response, 404
     return {"error": "Request must be JSON"}, 415
@@ -125,15 +135,34 @@ def checkPatientData():
         # but prevent the early stopping and work with a index counter (like counting how many times patient_name and perscription occur in the DB)
 # 3. evaluate the index counter
 # if counter > 1 => return true
-# if counter < 1 => return true
-# if counter == 1 => return false
+# if counter < 1 => return false
+# if counter == 1 => return true
 # 4. return whether you are successfull or not
 @app.route('/patient/check/duplicates', methods=['POST'])
 def checkForDuplicates():
     if request.is_json:
         print("called /patient/check/duplicates")
-        name, birthday, prescription = extractPatientDetailsFromRequest(request.json)
-        response = generateCheckDuplicateDataResponse("ok", "false", name, birthday, prescription)
+        name, birthday, prescription, process_instance_id = extractPatientDetailsFromRequest(request.json)
+        has_duplicate = False
+        with open(filepath, mode='r', newline='') as file:
+            csv_reader = csv.DictReader(file)
+            counter = 0
+            for row in csv_reader:
+                exisiting_prescription_list = row["prescription"].split(",")
+                if (
+                    row["patient_name"] == name and
+                    row["birthday"] == birthday and
+                    prescription in existing_prescription_list
+                ):
+                    counter += 1
+            
+            if counter < 1:
+                has_duplicate = False
+            elif counter == 1:
+                has_duplicate = True
+            else:
+                has_duplicate = True
+        response = generateCheckPatientDataResponse(str(has_duplicate), "duplication", name, birthday, prescription)
         print(response)
         return response, 201    
     return {"error": "Request must be JSON"}, 415
@@ -147,26 +176,27 @@ def checkForDuplicates():
 def checkForInteraction():
     print("/patient/check/interactions")
     if request.is_json:       
-        name, birthday, prescription = extractPatientDetailsFromRequest(request.json)
-        patient = getPatientEntityFromCsv(filepath, name)
-        prescription_list = patient['prescription'].split(",")
-        distinct_prescription_list = list(dict.fromkeys(prescription_list))
+        name, birthday, prescription, process_instance_id = extractPatientDetailsFromRequest(request.json)
+        patient = getPatientEntityFromCsv(filepath, name) # fetch existing prescriptions
+        previous_prescription_list = patient['prescription'].split(",")
+        distinct_prescription_list = list(dict.fromkeys(previous_prescription_list)) # distinct prescriptions
+        distinct_prescription_list.append(prescription) # add prescription to be issued
         drug_rxNorm_list = []
         for x in distinct_prescription_list:
-            drug_rxNorm_list.append(findRxNormByDrugName(x))
-        drug_rxNorm_list = [i for i in drug_rxNorm_list if i is not None]
-        interaction_list_tripple = findDrugInteractionsFromList(drug_rxNorm_list)
-        if len(interaction_list_tripple) == 0:
-            response = generateCheckForInteractionResponse("ok", "false", name, birthday, prescription)
+            drug_rxNorm_list.append(findRxNormByDrugName(x)) # Fetch RxNormID
+        drug_rxNorm_list = [i for i in drug_rxNorm_list if i is not None] # filter None's
+        interaction_list_tripple = findDrugInteractionsFromList(drug_rxNorm_list) # Fetch drug interactions
+        if interaction_list_tripple is None or len(interaction_list_tripple) == 0:
+            response = generateCheckPatientDataResponse("false", "no interactions", name, birthday, prescription)
+            return response, 200
         # Using a for loop to iterate over each tripple in the list
         for my_tripple in interaction_list_tripple:                        
             print(my_tripple)
-            #for item in my_tripple:                
-            #    print(item)
             print("!!!WARNING!!! => interaction found")
-        response = generateCheckForInteractionResponse("ok", "true", name, birthday, prescription)        
+        email_content = emailResponseTempalte("INTERACTION", "FOUND - Perscription Canceled", str(my_tripple)) 
+        response = generateCheckPatientDataResponse("true", email_content, name, birthday, prescription)        
         print(response)
-        return response, 201
+        return response, 200
     return {"error": "Request must be JSON"}, 415
 
 # @Magdalena
@@ -178,7 +208,7 @@ def checkForInteraction():
 def updateHealthInformation():
     if request.is_json:
         print("/patient/updateHealthInformation")
-        name, birthday, prescription = extractPatientDetailsFromRequest(request.json)               
+        name, birthday, prescription, process_instance_id = extractPatientDetailsFromRequest(request.json)               
         fields = ['patient_id', 'patient_name', 'birthday', 'gender', 'prescription']
         tempfile = NamedTemporaryFile(mode='w', delete=False)
         with open(filepath, 'r') as csvfile, tempfile:
@@ -190,13 +220,49 @@ def updateHealthInformation():
                     row['prescription'] = prescription + "," + old_perscription
                 row = {'patient_id': row['patient_id'], 'patient_name': row['patient_name'], 'birthday': row['birthday'], 'gender': row['gender'], 'prescription': row['prescription']}
                 writer.writerow(row)    
-        shutil.move(tempfile.name, filepath)        
-        response = generateCheckPatientDataResponse("ok", "EHR-System updated successfully", name, birthday, prescription)
+        shutil.move(tempfile.name, filepath)
+        header = '<strong>SUCCESS'
+        title = '- Prescription accepted!</strong>'
+        content = """We would like to inform you that the validation process for the submitted prescription was meticulously executed.<br />
+        The system seamlessly interacted with our database, performing essential checks to ensure the integrity and safety of the prescription.<br /><br />
+        <strong>The following validations were conducted:</strong><br />
+        <strong>  - Patient Existence Check:</strong> The system verified the existence of the patient in our records, confirming the accuracy of the provided patient information.<br />
+        <strong>  - Patient Prescription Duplicate Check:</strong> A comprehensive examination was conducted to identify any duplicate prescriptions associated with the patient, ensuring the prevention of redundant or conflicting medication instructions.<br />
+        <strong>  - Drug Existence Check:</strong> The system confirmed the presence of the prescribed drugs within our database, validating the availability of the specified medications for dispensation.<br />
+        <strong>  - Drug Interactions Check:</strong> In an effort to prioritize patient safety, the system assessed potential interactions between the prescribed drugs, thereby mitigating the risk of adverse effects.<br />
+        <br /><br />
+        Your commitment to adhering to best practices in prescription submission significantly contributes to the overall efficiency and reliability of our healthcare processes.<br /><br />
+        Best regards,<br>Health Automation Systems<br />
+        """
+        email_content = emailResponseTempalte(header, title, content) 
+        response = generateCheckPatientDataResponse("true", email_content, name, birthday, prescription)
         print(response)
         return response, 200
     return {"error": "Request must be JSON"}, 415
 
 
+@app.route('/confirmation/email', methods=['POST'])
+def confirmEmail():
+    if request.is_json:
+        print("/confirmation/email")        
+        name, birthday, prescription, email_patient, email_doctor, pharmacych = extractConfirmationEmailFromRequest(request.json)         
+        if pharmacych == "Pharmacy1":
+            pharmacy_email = "sebastian@fernandeznet.ch"
+        elif pharmacych == "Pharmacy2":
+            pharmacy_email = "info@pharmacy2.ch"
+        elif pharmacych == "Pharmacy3":
+            pharmacy_email = "info@pharmacy3.ch"
+        elif pharmacych == "Pharmacy4":
+            pharmacy_email = "info@pharmacy4.ch"
+        elif pharmacych == "Pharmacy5":
+            pharmacy_email = "info@pharmacy5.ch"
+        elif pharmacych == "Pharmacy6":
+            pharmacy_email = "info@pharmacy6.ch"        
+        
+        response = generateConfirmationEmailResponse(name, birthday, prescription, email_doctor, email_patient, pharmacy_email, "Test")        
+        print(response)
+        return response, 200        
+    return {"error": "Request must be JSON"}, 415
 
 # Drug Interaction API
 ######################
@@ -235,6 +301,3 @@ def findDrugInteractionsFromList(drug_list):
     else:
         return None
     
-
-# the following line of code will make this notebook act like a server
-app.run(host='0.0.0.0', port=8080)
