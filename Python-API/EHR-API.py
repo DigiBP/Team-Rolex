@@ -85,8 +85,7 @@ def generateConfirmationEmailResponse(patient_name, birthday, prescription, emai
         "email_patient": email_patient,
         "email_pharmacy": email_pharmacy,
         "email_content": email_content
-    }
-    print(value)
+    }    
     return json.dumps(value)
 
 def emailResponseTempalte(method, title, text):
@@ -193,7 +192,7 @@ def checkForInteraction():
         for my_tripple in interaction_list_tripple:                        
             print(my_tripple)
             print("!!!WARNING!!! => interaction found")
-        email_content = emailResponseTempalte("INTERACTION", "FOUND - Perscription Canceled", str(my_tripple)) 
+        email_content = emailResponseTempalte("INTERACTION", "FOUND - Prescription Canceled", str(my_tripple)) 
         response = generateCheckPatientDataResponse("true", email_content, name, birthday, prescription)        
         print(response)
         return response, 200
