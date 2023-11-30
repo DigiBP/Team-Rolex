@@ -25,9 +25,14 @@
 - Charuta Panda
 
 ## Introduction
+This repository contains our group project contribution to the “Digitalization of Business Processes in Healthcare” module at FHNW.
 
+Every year about 20’000 hospitalizations are caused by incidents with erroneous medication in Switzerland. Although not all of these incidents originate from prescribing medication it is a critical source of errors for possible iatrogenic harm of patients. Our solution – “Fast medication automation” – addresses this potential source of harm to patients and significant cost driver in the health care system.
+Prescribing medication is done multiple times in most doctors’ daily routine. A traditional paper prescription pad or a print out of a text editor generated template is still predominantly used, despite the advent of the first digital solutions. Therefore, we aimed at developing a supportive system to not only enhance the safety of patient treatments but also to create a facilitated administrative workflow.
+We envision that the currently used Swiss electronic health record (EHR; German: EPD, elektronisches Patientendossier) shall be amended with a nationwide consistent prescribing tool: Fast medication automation. Our tool will combine multiple commonly used preventive tools to be executed in a fully automated manner, equipped with sophisticated notification tools enabling short and precise communication. 
 
 ## Goal 🎯
+Our project aims at integrating a process which handles prescriptions with fully automated error preventive tools, stores data on the EHR, facilitates medication collection at pharmacies and simplifies interactions between involved health service providers. The integrated process we envision to apply even reduces the administrative workload of all stakeholders involved. In its entirety this will lead to secure, cost effective and streamlined workflows that result in most satisfied customers.
 
 ## Current As-Is Process
 ![](./static/img/EHR-System-Rolex-asIs.png)
@@ -35,7 +40,7 @@
 
 ___________
 
-### Issues with the current As-Is Proces 🚩
+### Issues with the current As-Is Process 🚩
 
 ___________
 
@@ -53,3 +58,12 @@ ___________
 ## Fully automated process
 
 ## Conclusion
+
+## Disclaimer
+1.	We are aware that the process is handling sensitive personal data according to the Federal Act on Data Protection (FADP) and that these data require the utmost protection. We are aware of the risks that could occur such as for example breach of secrecy, breach of confidentiality, violation of integrity and lack of availability.
+Fort this project, as we are in a testing environment with fictional data, the rules for Data Protection do not apply and we are focusing on the process itself. Therefore, we did not resile to use open platform tools like Google Forms and Voiceflow to illustrate our conception of the future-process.
+
+2.	We are aware that our Prescription form does not fulfill regulatory requirements. Especially, medication needs to be provided in a specific way and contain more information such as package size, dosage, medication use, etc. Nevertheless, it contains all important information and should represents the procedure itself, as our project focuses on fulfilling multiple automated error preventing tasks. At the moment, only the active pharmaceutical ingredient should be prescribed.
+
+3.	Our project aims to connect to the EHR. Therefore, only registered patients will be able to enjoy full service. As we created only a very simplified registry, we work with names instead of unique identifying numbers like the AHV-number.
+
