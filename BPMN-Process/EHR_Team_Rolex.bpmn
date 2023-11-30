@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0tw53ak" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.15.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.19.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0tw53ak" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.17.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.19.0">
   <bpmn:collaboration id="Collaboration_Cancellation_Email">
     <bpmn:participant id="Participant_01zh5yt" name="Government" processRef="Process_EHR-System-Rolex" />
     <bpmn:participant id="Participant_1490p9m" name="Patient" />
@@ -31,6 +31,46 @@
       <bpmn:outgoing>Flow_055q89v</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_0q207gn" messageRef="Message_2uparmc" />
     </bpmn:startEvent>
+    <bpmn:endEvent id="Event_cancellation" name="Cancellation sent">
+      <bpmn:extensionElements />
+      <bpmn:incoming>Flow_1evi7yg</bpmn:incoming>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1pu4ris">
+        <bpmn:extensionElements>
+          <camunda:connector>
+            <camunda:inputOutput>
+              <camunda:inputParameter name="url">https://hook.eu2.make.com/3nebf17pp6dnxhtsx4h32948get4dcpz</camunda:inputParameter>
+              <camunda:inputParameter name="method">POST</camunda:inputParameter>
+              <camunda:inputParameter name="payload">
+                <camunda:script scriptFormat="JavaScript">out = JSON.stringify(
+    {
+        "emailRecepient": email_doctor,
+        "html": "&lt;!DOCTYPE html&gt;&lt;html lang='en'&gt;&lt;head&gt;&lt;meta charset='UTF-8'&gt;&lt;meta name='viewport' content='width=device-width, initial-scale=1.0'&gt;&lt;title&gt;Notification: Prescription Automation&lt;/title&gt;&lt;style&gt;body{font-family:'Arial',sans-serif;margin:0;padding:0;background-color:#f4f4f4;}.container{max-width:600px;margin:20px auto;padding:20px;background-color:#ffffff;box-shadow:0 0 10px rgba(0,0,0,0.1);border-radius:8px;}h1{color:#333333;}p{color:#555555;margin-bottom:15px;}strong{color:#3498db;}.cta-button{display:inline-block;padding:10px 20px;background-color:#3498db;color:#ffffff;text-decoration:none;border-radius:5px;}br{margin-bottom:10px;line-height:0;}&lt;/style&gt;&lt;/head&gt;&lt;body&gt;&lt;div class='container'&gt;&lt;h1&gt;Notification: Prescription Automation&lt;/h1&gt;&lt;p&gt;Hello &lt;strong&gt;" + email_doctor + "&lt;/strong&gt;,&lt;/p&gt;&lt;p&gt;" + message + "&lt;/p&gt;&lt;p&gt;Process Instance ID: " + process_instance_id + "&lt;/p&gt;&lt;p&gt;Thank you for your attention!&lt;/p&gt;&lt;p&gt;Best regards,&lt;br&gt;Health Information Systems&lt;/p&gt;&lt;br /&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;"
+    }
+);</camunda:script>
+              </camunda:inputParameter>
+              <camunda:inputParameter name="headers">
+                <camunda:map>
+                  <camunda:entry key="Content-Type">application/json</camunda:entry>
+                </camunda:map>
+              </camunda:inputParameter>
+            </camunda:inputOutput>
+            <camunda:connectorId>http-connector</camunda:connectorId>
+          </camunda:connector>
+        </bpmn:extensionElements>
+      </bpmn:messageEventDefinition>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="Activity_Topic_Definition" name="Topic: newPrescriptionForm" camunda:type="external" camunda:topic="newPrescriptionForm" camunda:taskPriority="1">
+      <bpmn:extensionElements />
+      <bpmn:incoming>Flow_055q89v</bpmn:incoming>
+      <bpmn:outgoing>Flow_11qatgu</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_055q89v" sourceRef="Message_NewPrescription" targetRef="Activity_Topic_Definition">
+      <bpmn:extensionElements />
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_11qatgu" sourceRef="Activity_Topic_Definition" targetRef="Activity_check_prescription_existence">
+      <bpmn:extensionElements />
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1evi7yg" sourceRef="Gateway_check_logic_correlator" targetRef="Event_cancellation" />
     <bpmn:exclusiveGateway id="Gateway_checkduplicate" name="duplicates?">
       <bpmn:extensionElements />
       <bpmn:incoming>Flow_1ta315f</bpmn:incoming>
@@ -205,13 +245,14 @@ message=object.message;</camunda:script>
           <camunda:connectorId>http-connector</camunda:connectorId>
         </camunda:connector>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_11qatgu</bpmn:incoming>
+      <bpmn:incoming>Flow_1iwlbdz</bpmn:incoming>
       <bpmn:outgoing>Flow_1irgwfz</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:exclusiveGateway id="Gateway_check_logic_correlator">
       <bpmn:incoming>Flow_045l2ov</bpmn:incoming>
       <bpmn:incoming>Flow_0mwnfqu</bpmn:incoming>
       <bpmn:incoming>Flow_patient_not_existent</bpmn:incoming>
+      <bpmn:incoming>Flow_0stbn8z</bpmn:incoming>
       <bpmn:outgoing>Flow_1evi7yg</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:intermediateThrowEvent id="Event_show_pharmacy" name="patient choose pharmacy email">
@@ -251,39 +292,6 @@ message=object.message;</camunda:script>
       <bpmn:outgoing>Flow_06m5b85</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_0izidlr" messageRef="Message_04dr7hn" />
     </bpmn:intermediateCatchEvent>
-    <bpmn:endEvent id="Event_cancellation" name="Cancellation sent">
-      <bpmn:extensionElements />
-      <bpmn:incoming>Flow_1evi7yg</bpmn:incoming>
-      <bpmn:messageEventDefinition id="MessageEventDefinition_1pu4ris">
-        <bpmn:extensionElements>
-          <camunda:connector>
-            <camunda:inputOutput>
-              <camunda:inputParameter name="url">https://hook.eu2.make.com/3nebf17pp6dnxhtsx4h32948get4dcpz</camunda:inputParameter>
-              <camunda:inputParameter name="method">POST</camunda:inputParameter>
-              <camunda:inputParameter name="payload">
-                <camunda:script scriptFormat="JavaScript">out = JSON.stringify(
-    {
-        "emailRecepient": email_doctor,
-        "html": "&lt;!DOCTYPE html&gt;&lt;html lang='en'&gt;&lt;head&gt;&lt;meta charset='UTF-8'&gt;&lt;meta name='viewport' content='width=device-width, initial-scale=1.0'&gt;&lt;title&gt;Notification: Prescription Automation&lt;/title&gt;&lt;style&gt;body{font-family:'Arial',sans-serif;margin:0;padding:0;background-color:#f4f4f4;}.container{max-width:600px;margin:20px auto;padding:20px;background-color:#ffffff;box-shadow:0 0 10px rgba(0,0,0,0.1);border-radius:8px;}h1{color:#333333;}p{color:#555555;margin-bottom:15px;}strong{color:#3498db;}.cta-button{display:inline-block;padding:10px 20px;background-color:#3498db;color:#ffffff;text-decoration:none;border-radius:5px;}br{margin-bottom:10px;line-height:0;}&lt;/style&gt;&lt;/head&gt;&lt;body&gt;&lt;div class='container'&gt;&lt;h1&gt;Notification: Prescription Automation&lt;/h1&gt;&lt;p&gt;Hello &lt;strong&gt;" + email_doctor + "&lt;/strong&gt;,&lt;/p&gt;&lt;p&gt;" + message + "&lt;/p&gt;&lt;p&gt;Process Instance ID: " + process_instance_id + "&lt;/p&gt;&lt;p&gt;Thank you for your attention!&lt;/p&gt;&lt;p&gt;Best regards,&lt;br&gt;Health Information Systems&lt;/p&gt;&lt;br /&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;"
-    }
-);</camunda:script>
-              </camunda:inputParameter>
-              <camunda:inputParameter name="headers">
-                <camunda:map>
-                  <camunda:entry key="Content-Type">application/json</camunda:entry>
-                </camunda:map>
-              </camunda:inputParameter>
-            </camunda:inputOutput>
-            <camunda:connectorId>http-connector</camunda:connectorId>
-          </camunda:connector>
-        </bpmn:extensionElements>
-      </bpmn:messageEventDefinition>
-    </bpmn:endEvent>
-    <bpmn:serviceTask id="Activity_Topic_Definition" name="Topic: newPrescriptionForm" camunda:type="external" camunda:topic="newPrescriptionForm" camunda:taskPriority="1">
-      <bpmn:extensionElements />
-      <bpmn:incoming>Flow_055q89v</bpmn:incoming>
-      <bpmn:outgoing>Flow_11qatgu</bpmn:outgoing>
-    </bpmn:serviceTask>
     <bpmn:serviceTask id="Activity_fetch_pharmacy_email" name="Fetch Pharmacy Email">
       <bpmn:extensionElements>
         <camunda:connector>
@@ -422,9 +430,6 @@ email_content=object.email_content;</camunda:script>
         </bpmn:extensionElements>
       </bpmn:messageEventDefinition>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_055q89v" sourceRef="Message_NewPrescription" targetRef="Activity_Topic_Definition">
-      <bpmn:extensionElements />
-    </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1ta315f" sourceRef="Activity_check_duplication" targetRef="Gateway_checkduplicate" />
     <bpmn:sequenceFlow id="Flow_045l2ov" name="yes" sourceRef="Gateway_checkduplicate" targetRef="Gateway_check_logic_correlator">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${execution.getVariable('has_duplicate') == true}</bpmn:conditionExpression>
@@ -447,10 +452,7 @@ email_content=object.email_content;</camunda:script>
     <bpmn:sequenceFlow id="Flow_0mwnfqu" name="yes" sourceRef="Gateway_checkInteractions" targetRef="Gateway_check_logic_correlator">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${execution.getVariable('has_interactions') == true}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_11qatgu" sourceRef="Activity_Topic_Definition" targetRef="Activity_check_patient_existence">
-      <bpmn:extensionElements />
-    </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_1evi7yg" sourceRef="Gateway_check_logic_correlator" targetRef="Event_cancellation" />
+    <bpmn:sequenceFlow id="Flow_1lbi32u" sourceRef="Activity_check_prescription_existence" targetRef="Gateway_0ecmuwd" />
     <bpmn:sequenceFlow id="Flow_0sr3ab3" sourceRef="Event_show_pharmacy" targetRef="pharmacy_choosen">
       <bpmn:extensionElements />
     </bpmn:sequenceFlow>
@@ -459,6 +461,69 @@ email_content=object.email_content;</camunda:script>
     <bpmn:sequenceFlow id="Flow_02yk9lq" sourceRef="Gateway_email_correlator" targetRef="Event_Patient_Confirmation_Email" />
     <bpmn:sequenceFlow id="Flow_0qda2jp" sourceRef="Gateway_email_correlator" targetRef="Event_Pharmacy_Confirmation_Email" />
     <bpmn:sequenceFlow id="Flow_01vai98" sourceRef="Gateway_email_correlator" targetRef="Event_Doctor_Confirmation_Email" />
+    <bpmn:sequenceFlow id="Flow_1iwlbdz" name="yes" sourceRef="Gateway_0ecmuwd" targetRef="Activity_check_patient_existence">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${execution.getVariable('exists') == true}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:serviceTask id="Activity_check_prescription_existence" name="check prescription">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="method">POST</camunda:inputParameter>
+            <camunda:inputParameter name="url">https://927aa70e-3479-4236-ae8d-88111fb4fd4f.deepnoteproject.com/prescription/check</camunda:inputParameter>
+            <camunda:inputParameter name="payload">
+              <camunda:script scriptFormat="JavaScript">out = JSON.stringify(
+{  
+    "patient_name": patient_name,
+    "birthday": birthday,
+    "prescription": prescription,
+    "process_instance_id": process_instance_id
+}
+);</camunda:script>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="headers">
+              <camunda:map>
+                <camunda:entry key="Content-Type">application/json</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
+            <camunda:outputParameter name="headers">
+              <camunda:map>
+                <camunda:entry key="Content-Type">application/json</camunda:entry>
+              </camunda:map>
+            </camunda:outputParameter>
+            <camunda:outputParameter name="exists">
+              <camunda:script scriptFormat="JavaScript">object=JSON.parse(response);
+exists=(object.status.toLowerCase() === 'true');</camunda:script>
+            </camunda:outputParameter>
+            <camunda:outputParameter name="message">
+              <camunda:script scriptFormat="JavaScript">object=JSON.parse(response);
+message=object.message;</camunda:script>
+            </camunda:outputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>http-connector</camunda:connectorId>
+        </camunda:connector>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_11qatgu</bpmn:incoming>
+      <bpmn:outgoing>Flow_1lbi32u</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0stbn8z" name="no" sourceRef="Gateway_0ecmuwd" targetRef="Gateway_check_logic_correlator">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${execution.getVariable('exists') == false}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:exclusiveGateway id="Gateway_0ecmuwd" name="exists?">
+      <bpmn:incoming>Flow_1lbi32u</bpmn:incoming>
+      <bpmn:outgoing>Flow_1iwlbdz</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0stbn8z</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:textAnnotation id="TextAnnotation_119kmu7">
+      <bpmn:text>Form Fields patient_name:string
+birthday:date
+prescription:string
+recipientEmail: string
+patient_email: string
+process_instance_id: string</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_0y37pby">
+      <bpmn:text>EHR Automation System</bpmn:text>
+    </bpmn:textAnnotation>
     <bpmn:textAnnotation id="TextAnnotation_1ybdrqz">
       <bpmn:text>Http-Connector [POST] "/patient/updateHealthInformation"</bpmn:text>
     </bpmn:textAnnotation>
@@ -471,19 +536,8 @@ email_content=object.email_content;</camunda:script>
     <bpmn:textAnnotation id="TextAnnotation_1a2djcf">
       <bpmn:text>Http-Connector [POST] "/patient/check"</bpmn:text>
     </bpmn:textAnnotation>
-    <bpmn:textAnnotation id="TextAnnotation_119kmu7">
-      <bpmn:text>Form Fields patient_name:string
-birthday:date
-prescription:string
-recipientEmail: string
-patient_email: string
-process_instance_id: string</bpmn:text>
-    </bpmn:textAnnotation>
-    <bpmn:textAnnotation id="TextAnnotation_0y37pby">
-      <bpmn:text>EHR Automation System</bpmn:text>
-    </bpmn:textAnnotation>
     <bpmn:textAnnotation id="TextAnnotation_18ftpve">
-      <bpmn:text>Topic "newPrescriptionForm"</bpmn:text>
+      <bpmn:text>Http-Connector [POST] "/prescription/check"</bpmn:text>
     </bpmn:textAnnotation>
   </bpmn:process>
   <bpmn:message id="Message_1p7oegj" name="PrescriptionReceivedMessages" />
@@ -493,91 +547,33 @@ process_instance_id: string</bpmn:text>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_Cancellation_Email">
       <bpmndi:BPMNShape id="Participant_01zh5yt_di" bpmnElement="Participant_01zh5yt" isHorizontal="true">
-        <dc:Bounds x="120" y="380" width="1840" height="510" />
+        <dc:Bounds x="120" y="380" width="2010" height="510" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_08elwq7" bpmnElement="TextAnnotation_1ybdrqz">
-        <dc:Bounds x="1230" y="509" width="230" height="40" />
+        <dc:Bounds x="1400" y="509" width="230" height="40" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_178rfnp" bpmnElement="TextAnnotation_07nlku7">
-        <dc:Bounds x="770" y="508" width="170" height="41" />
+        <dc:Bounds x="940" y="508" width="170" height="41" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_06vt3uo" bpmnElement="TextAnnotation_1idwgtl">
-        <dc:Bounds x="1000" y="509" width="170" height="40" />
+        <dc:Bounds x="1170" y="509" width="170" height="40" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_1mpso6f" bpmnElement="TextAnnotation_1a2djcf">
-        <dc:Bounds x="540" y="508" width="148" height="41" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_119kmu7_di" bpmnElement="TextAnnotation_119kmu7">
-        <dc:Bounds x="170" y="460" width="180" height="113" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_0y37pby_di" bpmnElement="TextAnnotation_0y37pby">
-        <dc:Bounds x="160" y="390" width="200" height="30" />
+        <dc:Bounds x="710" y="508" width="148" height="41" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_18ftpve_di" bpmnElement="TextAnnotation_18ftpve">
-        <dc:Bounds x="340" y="496" width="172" height="41" />
+        <dc:Bounds x="470" y="508" width="172" height="41" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_0ocst8t" bpmnElement="Message_NewPrescription">
         <dc:Bounds x="252" y="602" width="36" height="36" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="239" y="583" width="81" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_1qlcqdl_di" bpmnElement="Gateway_checkduplicate" isMarkerVisible="true">
-        <dc:Bounds x="915" y="595" width="50" height="50" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="912" y="565" width="56" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1ggj7s7_di" bpmnElement="Activity_updateHealthInformation">
-        <dc:Bounds x="1250" y="580" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1uuvlzj_di" bpmnElement="Activity_check_duplication">
-        <dc:Bounds x="780" y="580" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_10wj2et" bpmnElement="Gateway_patientExists" isMarkerVisible="true">
-        <dc:Bounds x="675" y="595" width="50" height="50" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="683" y="565" width="35" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0opki5q_di" bpmnElement="Activity_check_interactions">
-        <dc:Bounds x="1010" y="580" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_1huv3yl_di" bpmnElement="Gateway_checkInteractions" isMarkerVisible="true">
-        <dc:Bounds x="1155" y="595" width="50" height="50" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1149" y="565" width="63" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_02zic1w_di" bpmnElement="Activity_check_patient_existence">
-        <dc:Bounds x="540" y="580" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0pnvkbu" bpmnElement="Gateway_check_logic_correlator" isMarkerVisible="true">
-        <dc:Bounds x="915" y="695" width="50" height="50" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="869.5" y="673" width="35" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0kdfx8h_di" bpmnElement="Event_show_pharmacy">
-        <dc:Bounds x="1412" y="602" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1394" y="645" width="78" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0q3b93h_di" bpmnElement="pharmacy_choosen">
-        <dc:Bounds x="1502" y="602" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1495" y="647.5" width="50" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1glzafd_di" bpmnElement="Event_cancellation">
@@ -590,179 +586,265 @@ process_instance_id: string</bpmn:text>
         <dc:Bounds x="340" y="580" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_119kmu7_di" bpmnElement="TextAnnotation_119kmu7">
+        <dc:Bounds x="170" y="460" width="180" height="113" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0y37pby_di" bpmnElement="TextAnnotation_0y37pby">
+        <dc:Bounds x="160" y="390" width="200" height="30" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1qlcqdl_di" bpmnElement="Gateway_checkduplicate" isMarkerVisible="true">
+        <dc:Bounds x="1085" y="595" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1082" y="565" width="56" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1ggj7s7_di" bpmnElement="Activity_updateHealthInformation">
+        <dc:Bounds x="1420" y="580" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1uuvlzj_di" bpmnElement="Activity_check_duplication">
+        <dc:Bounds x="950" y="580" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_10wj2et" bpmnElement="Gateway_patientExists" isMarkerVisible="true">
+        <dc:Bounds x="845" y="595" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="853" y="565" width="35" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0opki5q_di" bpmnElement="Activity_check_interactions">
+        <dc:Bounds x="1180" y="580" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1huv3yl_di" bpmnElement="Gateway_checkInteractions" isMarkerVisible="true">
+        <dc:Bounds x="1325" y="595" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1319" y="565" width="63" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_02zic1w_di" bpmnElement="Activity_check_patient_existence">
+        <dc:Bounds x="710" y="580" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0pnvkbu" bpmnElement="Gateway_check_logic_correlator" isMarkerVisible="true">
+        <dc:Bounds x="1085" y="695" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="869.5" y="673" width="35" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0kdfx8h_di" bpmnElement="Event_show_pharmacy">
+        <dc:Bounds x="1582" y="602" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1564" y="645" width="79" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0q3b93h_di" bpmnElement="pharmacy_choosen">
+        <dc:Bounds x="1672" y="602" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1665" y="648" width="51" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_120vi57_di" bpmnElement="Activity_fetch_pharmacy_email">
-        <dc:Bounds x="1590" y="580" width="100" height="80" />
+        <dc:Bounds x="1760" y="580" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_02lazy2_di" bpmnElement="Gateway_email_correlator">
-        <dc:Bounds x="1755" y="595" width="50" height="50" />
+        <dc:Bounds x="1925" y="595" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_19qukb5" bpmnElement="Event_Pharmacy_Confirmation_Email">
-        <dc:Bounds x="1862" y="602" width="36" height="36" />
+        <dc:Bounds x="2032" y="602" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1845" y="646" width="90" height="27" />
+          <dc:Bounds x="2015" y="646" width="90" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0rdju54_di" bpmnElement="Event_Patient_Confirmation_Email">
-        <dc:Bounds x="1762" y="492" width="36" height="36" />
+        <dc:Bounds x="1932" y="492" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1662" y="499" width="90" height="27" />
+          <dc:Bounds x="1832" y="499" width="90" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_0arrie2" bpmnElement="Event_Doctor_Confirmation_Email">
-        <dc:Bounds x="1762" y="712" width="36" height="36" />
+        <dc:Bounds x="1932" y="712" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1805" y="716" width="90" height="27" />
+          <dc:Bounds x="1975" y="716" width="90" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0v8uzo8" bpmnElement="Activity_check_prescription_existence">
+        <dc:Bounds x="490" y="580" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0zi85he" bpmnElement="Gateway_0ecmuwd" isMarkerVisible="true">
+        <dc:Bounds x="625" y="595" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="633" y="565" width="35" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_055q89v_di" bpmnElement="Flow_055q89v">
         <di:waypoint x="288" y="620" />
         <di:waypoint x="340" y="620" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1ta315f_di" bpmnElement="Flow_1ta315f">
-        <di:waypoint x="880" y="620" />
-        <di:waypoint x="915" y="620" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_045l2ov_di" bpmnElement="Flow_045l2ov">
-        <di:waypoint x="940" y="645" />
-        <di:waypoint x="940" y="695" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="947" y="669" width="18" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0mhs0li_di" bpmnElement="Flow_0mhs0li">
-        <di:waypoint x="965" y="620" />
-        <di:waypoint x="1010" y="620" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="973" y="602" width="13" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0w81av3_di" bpmnElement="Flow_0w81av3">
-        <di:waypoint x="1205" y="620" />
-        <di:waypoint x="1250" y="620" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1221" y="602" width="13" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_151krjz_di" bpmnElement="Flow_151krjz">
-        <di:waypoint x="1350" y="620" />
-        <di:waypoint x="1412" y="620" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0c8i1ro_di" bpmnElement="Flow_patient_exists">
-        <di:waypoint x="725" y="620" />
-        <di:waypoint x="780" y="620" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="741" y="602" width="18" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1irgwfz_di" bpmnElement="Flow_1irgwfz">
-        <di:waypoint x="640" y="620" />
-        <di:waypoint x="675" y="620" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1hexu98_di" bpmnElement="Flow_patient_not_existent">
-        <di:waypoint x="700" y="645" />
-        <di:waypoint x="700" y="720" />
-        <di:waypoint x="915" y="720" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="703" y="674" width="13" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_10jlmpq_di" bpmnElement="Flow_10jlmpq">
-        <di:waypoint x="1110" y="620" />
-        <di:waypoint x="1155" y="620" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0mwnfqu_di" bpmnElement="Flow_0mwnfqu">
-        <di:waypoint x="1180" y="645" />
-        <di:waypoint x="1180" y="720" />
-        <di:waypoint x="965" y="720" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1187" y="674" width="18" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_11qatgu_di" bpmnElement="Flow_11qatgu">
         <di:waypoint x="440" y="620" />
-        <di:waypoint x="540" y="620" />
+        <di:waypoint x="490" y="620" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="351" y="431" width="63" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1evi7yg_di" bpmnElement="Flow_1evi7yg">
-        <di:waypoint x="940" y="745" />
-        <di:waypoint x="940" y="810" />
+        <di:waypoint x="1110" y="745" />
+        <di:waypoint x="1110" y="810" />
         <di:waypoint x="518" y="810" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ta315f_di" bpmnElement="Flow_1ta315f">
+        <di:waypoint x="1050" y="620" />
+        <di:waypoint x="1085" y="620" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_045l2ov_di" bpmnElement="Flow_045l2ov">
+        <di:waypoint x="1110" y="645" />
+        <di:waypoint x="1110" y="695" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1118" y="669" width="17" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0mhs0li_di" bpmnElement="Flow_0mhs0li">
+        <di:waypoint x="1135" y="620" />
+        <di:waypoint x="1180" y="620" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1143" y="602" width="13" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0w81av3_di" bpmnElement="Flow_0w81av3">
+        <di:waypoint x="1375" y="620" />
+        <di:waypoint x="1420" y="620" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1391" y="602" width="13" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_151krjz_di" bpmnElement="Flow_151krjz">
+        <di:waypoint x="1520" y="620" />
+        <di:waypoint x="1582" y="620" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0c8i1ro_di" bpmnElement="Flow_patient_exists">
+        <di:waypoint x="895" y="620" />
+        <di:waypoint x="950" y="620" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="912" y="602" width="17" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1irgwfz_di" bpmnElement="Flow_1irgwfz">
+        <di:waypoint x="810" y="620" />
+        <di:waypoint x="845" y="620" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1hexu98_di" bpmnElement="Flow_patient_not_existent">
+        <di:waypoint x="870" y="645" />
+        <di:waypoint x="870" y="720" />
+        <di:waypoint x="1085" y="720" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="873" y="674" width="13" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_10jlmpq_di" bpmnElement="Flow_10jlmpq">
+        <di:waypoint x="1280" y="620" />
+        <di:waypoint x="1325" y="620" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0mwnfqu_di" bpmnElement="Flow_0mwnfqu">
+        <di:waypoint x="1350" y="645" />
+        <di:waypoint x="1350" y="720" />
+        <di:waypoint x="1135" y="720" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1358" y="674" width="17" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1lbi32u_di" bpmnElement="Flow_1lbi32u">
+        <di:waypoint x="590" y="620" />
+        <di:waypoint x="625" y="620" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0sr3ab3_di" bpmnElement="Flow_0sr3ab3">
-        <di:waypoint x="1448" y="620" />
-        <di:waypoint x="1502" y="620" />
+        <di:waypoint x="1618" y="620" />
+        <di:waypoint x="1672" y="620" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_06m5b85_di" bpmnElement="Flow_06m5b85">
-        <di:waypoint x="1538" y="620" />
-        <di:waypoint x="1590" y="620" />
+        <di:waypoint x="1708" y="620" />
+        <di:waypoint x="1760" y="620" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1ibxpzn_di" bpmnElement="Flow_1ibxpzn">
-        <di:waypoint x="1690" y="620" />
-        <di:waypoint x="1755" y="620" />
+        <di:waypoint x="1860" y="620" />
+        <di:waypoint x="1925" y="620" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_02yk9lq_di" bpmnElement="Flow_02yk9lq">
-        <di:waypoint x="1780" y="595" />
-        <di:waypoint x="1780" y="528" />
+        <di:waypoint x="1950" y="595" />
+        <di:waypoint x="1950" y="528" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0qda2jp_di" bpmnElement="Flow_0qda2jp">
-        <di:waypoint x="1805" y="620" />
-        <di:waypoint x="1862" y="620" />
+        <di:waypoint x="1975" y="620" />
+        <di:waypoint x="2032" y="620" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_01vai98_di" bpmnElement="Flow_01vai98">
-        <di:waypoint x="1780" y="645" />
-        <di:waypoint x="1780" y="712" />
+        <di:waypoint x="1950" y="645" />
+        <di:waypoint x="1950" y="712" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1iwlbdz_di" bpmnElement="Flow_1iwlbdz">
+        <di:waypoint x="675" y="620" />
+        <di:waypoint x="710" y="620" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="684" y="602" width="17" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0stbn8z_di" bpmnElement="Flow_0stbn8z">
+        <di:waypoint x="650" y="645" />
+        <di:waypoint x="650" y="720" />
+        <di:waypoint x="1085" y="720" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="659" y="680" width="13" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Participant_0jwj730_di" bpmnElement="Participant_1490p9m" isHorizontal="true">
-        <dc:Bounds x="120" y="280" width="1840" height="60" />
+        <dc:Bounds x="120" y="280" width="2010" height="60" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_02pbizm" bpmnElement="Participant_1wlli3m" isHorizontal="true">
-        <dc:Bounds x="120" y="930" width="1840" height="60" />
+        <dc:Bounds x="120" y="930" width="2010" height="60" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Participant_0adjoeu_di" bpmnElement="Participant_1wppqnx" isHorizontal="true">
-        <dc:Bounds x="120" y="180" width="1840" height="60" />
+        <dc:Bounds x="120" y="180" width="2010" height="60" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_13mn8ve" bpmnElement="Participant_0ptejry" isHorizontal="true">
-        <dc:Bounds x="120" y="80" width="1840" height="60" />
+        <dc:Bounds x="120" y="80" width="2010" height="60" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1heqwhf_di" bpmnElement="Flow_1heqwhf">
+        <di:waypoint x="1690" y="340" />
+        <di:waypoint x="1690" y="602" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_06o7zj1_di" bpmnElement="Flow_06o7zj1">
+        <di:waypoint x="1950" y="492" />
+        <di:waypoint x="1950" y="340" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1flwhsj_di" bpmnElement="Flow_1flwhsj">
         <di:waypoint x="270" y="930" />
         <di:waypoint x="270" y="638" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1668rao_di" bpmnElement="Flow_1668rao">
-        <di:waypoint x="1430" y="602" />
-        <di:waypoint x="1430" y="340" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1heqwhf_di" bpmnElement="Flow_1heqwhf">
-        <di:waypoint x="1520" y="340" />
-        <di:waypoint x="1520" y="602" />
+      <bpmndi:BPMNEdge id="Flow_0i8a49x_di" bpmnElement="Flow_0i8a49x">
+        <di:waypoint x="2050" y="602" />
+        <di:waypoint x="2050" y="240" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_172nmhs_di" bpmnElement="Flow_172nmhs">
         <di:waypoint x="500" y="828" />
         <di:waypoint x="500" y="930" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0i8a49x_di" bpmnElement="Flow_0i8a49x">
-        <di:waypoint x="1880" y="602" />
-        <di:waypoint x="1880" y="240" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0t0wtc0_di" bpmnElement="Flow_0t0wtc0">
-        <di:waypoint x="1881" y="602" />
-        <di:waypoint x="1910" y="260" />
-        <di:waypoint x="1884" y="140" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_06o7zj1_di" bpmnElement="Flow_06o7zj1">
-        <di:waypoint x="1780" y="492" />
-        <di:waypoint x="1780" y="340" />
+      <bpmndi:BPMNEdge id="Flow_1668rao_di" bpmnElement="Flow_1668rao">
+        <di:waypoint x="1600" y="602" />
+        <di:waypoint x="1600" y="340" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1b7bng7_di" bpmnElement="Flow_1b7bng7">
-        <di:waypoint x="1780" y="748" />
-        <di:waypoint x="1780" y="930" />
+        <di:waypoint x="1950" y="748" />
+        <di:waypoint x="1950" y="930" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0t0wtc0_di" bpmnElement="Flow_0t0wtc0">
+        <di:waypoint x="2049" y="602" />
+        <di:waypoint x="2049" y="140" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
