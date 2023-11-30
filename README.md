@@ -59,7 +59,7 @@ ___________
 
 ## Conclusion
 
-![](./static/img/logo.png)
+![](./static/img/logo.jpg)
 
 ## Disclaimer
 1.	We are aware that the process is handling sensitive personal data according to the Federal Act on Data Protection (FADP) and that these data require the utmost protection. We are aware of the risks that could occur such as for example breach of secrecy, breach of confidentiality, violation of integrity and lack of availability.
