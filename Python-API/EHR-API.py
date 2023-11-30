@@ -102,6 +102,24 @@ import shutil
 def ehr_app():
     return "This is an Electronic Health Record service."
 
+@app.route('/prescription/check', methods=['POST'])
+def checkPrescriptionExists():
+    print("called /prescription/check")       
+    if request.is_json:
+        name, birthday, prescription, process_instance_id = extractPatientDetailsFromRequest(request.json)
+        logger.info(f'Processing task for patient: {name}')
+        prescription_exists = findRxNormByDrugName(prescription)
+        response = None
+        if prescription_exists is None:
+            email_content = emailResponseTempalte("NOT EXISTENT", " - Perscription Canceled", "The prescription you entered is not existent. <br /> <p>Prescription: "+prescription+"</p>")
+            response = generateCheckPatientDataResponse("false", email_content, name, birthday, prescription)
+        else:
+            response = generateCheckPatientDataResponse("true", "", name, birthday, prescription)            
+            
+        print(response)
+        return response, 404
+    return {"error": "Request must be JSON"}, 415
+
 # @Bojana
 # 1. Fetch the patient_id, patient_name, birthday, perscription from request
 # 2. check if database contains patient_name    
@@ -147,20 +165,14 @@ def checkForDuplicates():
             csv_reader = csv.DictReader(file)
             counter = 0
             for row in csv_reader:
-                exisiting_prescription_list = row["prescription"].split(",")
-                if (
-                    row["patient_name"] == name and
-                    row["birthday"] == birthday and
-                    prescription in existing_prescription_list
-                ):
-                    counter += 1
-            
+                if (row["patient_name"] == name and prescription in row["prescription"]):
+                    counter += 1            
             if counter < 1:
                 has_duplicate = False
             elif counter == 1:
-                has_duplicate = True
+                has_duplicate = False #True
             else:
-                has_duplicate = True
+                has_duplicate = False #True
         response = generateCheckPatientDataResponse(str(has_duplicate), "duplication", name, birthday, prescription)
         print(response)
         return response, 201    
@@ -231,7 +243,6 @@ def updateHealthInformation():
         <strong>  - Drug Interactions Check:</strong> In an effort to prioritize patient safety, the system assessed potential interactions between the prescribed drugs, thereby mitigating the risk of adverse effects.<br />
         <br /><br />
         Your commitment to adhering to best practices in prescription submission significantly contributes to the overall efficiency and reliability of our healthcare processes.<br /><br />
-        Best regards,<br>Health Automation Systems<br />
         """
         email_content = emailResponseTempalte(header, title, content) 
         response = generateCheckPatientDataResponse("true", email_content, name, birthday, prescription)
@@ -244,18 +255,19 @@ def updateHealthInformation():
 def confirmEmail():
     if request.is_json:
         print("/confirmation/email")        
+        print(request.json)
         name, birthday, prescription, email_patient, email_doctor, pharmacych = extractConfirmationEmailFromRequest(request.json)         
-        if pharmacych == "Pharmacy1":
+        if pharmacych == "Pharmacy 1, Zurich":
             pharmacy_email = "sebastian@fernandeznet.ch"
-        elif pharmacych == "Pharmacy2":
-            pharmacy_email = "info@pharmacy2.ch"
-        elif pharmacych == "Pharmacy3":
+        elif pharmacych == "Pharmacy 2, Basel":
+            pharmacy_email = "magdalena.hardegger@students.fhnw.ch"
+        elif pharmacych == "Pharmacy 3, Bern":
             pharmacy_email = "info@pharmacy3.ch"
-        elif pharmacych == "Pharmacy4":
+        elif pharmacych == "Pharmacy 4, Geneva":
             pharmacy_email = "info@pharmacy4.ch"
-        elif pharmacych == "Pharmacy5":
+        elif pharmacych == "Pharmacy 5, Luzern":
             pharmacy_email = "info@pharmacy5.ch"
-        elif pharmacych == "Pharmacy6":
+        elif pharmacych == "Pharmacy 6, Lugano":
             pharmacy_email = "info@pharmacy6.ch"        
         
         response = generateConfirmationEmailResponse(name, birthday, prescription, email_doctor, email_patient, pharmacy_email, "Test")        
