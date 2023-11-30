@@ -12,7 +12,7 @@
 | Magdalena Hardegger | magdalena.hardegger@students.fhnw.ch |
 
 ## Links 🔗
-- API: [DeepNote](https://deepnote.com/workspace/daught-90c8f362-c010-4677-9f84-fd2c734b75ff/project/Sebastians-Untitled-project-927aa70e-3479-4236-ae8d-88111fb4fd4f/notebook/EHR-System-6c884184676d4ab89132c5ffc9ce726a?) (Version Sebastian 11.15.2023)
+- API: [DeepNote](https://deepnote.com/workspace/daught-90c8f362-c010-4677-9f84-fd2c734b75ff/project/Sebastians-Untitled-project-927aa70e-3479-4236-ae8d-88111fb4fd4f/notebook/EHR-System-6c884184676d4ab89132c5ffc9ce726a?) (Latest Version )
 - Google Forms: [Prescription](https://docs.google.com/forms/d/e/1FAIpQLSfTyC9M5EsB9jfqm9VB2KIwuVtSYK3EG5AdTjiTN4MWRj9KTg/viewform)
 - Voiceflow Webchat: [Choose your pharmacy](https://digibp.github.io/Team-Rolex/)
 - Make [EHR-System_Team-Rolex_PerscriptionRegistration-Form](https://eu2.make.com/134029/scenarios/419988/edit)
