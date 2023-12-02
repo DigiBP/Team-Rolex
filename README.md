@@ -98,10 +98,10 @@ The processes are operated by the following tools:
 -	REST API server provided via Deepnote
 -	Voiceflow
 
-# Start process and retrieve information from the initial Google forms message (Prescription) using “Make”.
-# Prepare appropriate cancellation messages via our API and send those messages using “Make”
-# Present the choice of pharmacy to the patient in a human-like manner using “Voiceflow”.
-# Prepare appropriate confirmation messages via our API, Camunda and send those messages using “Make”
+#### Start process and retrieve information from the initial Google forms message (Prescription) using “Make”.
+#### Prepare appropriate cancellation messages via our API and send those messages using “Make”
+#### Present the choice of pharmacy to the patient in a human-like manner using “Voiceflow”.
+#### Prepare appropriate confirmation messages via our API, Camunda and send those messages using “Make”
 
 ### Benefits ✔️
 
