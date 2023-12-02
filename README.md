@@ -101,9 +101,14 @@ The processes are operated by the following tools:
 
 ### Fully automated process
 #### Start process and retrieve information from the initial Google forms message (Prescription) using “Make”.
+![](./static/img/Prescription_google_forms.png)
 #### Prepare appropriate cancellation messages via our API and send those messages using “Make”
+![](./static/img/Make_sendCancellation.png)
 #### Present the choice of pharmacy to the patient in a human-like manner using “Voiceflow”.
+![](./static/img/chatbot_voiceflow.png)
+![](./static/img/voiceflow_design.png)
 #### Prepare appropriate confirmation messages via our API, Camunda and send those messages using “Make”
+![](./static/img/Make_emailConformation.png)
 
 ### Benefits ✔️
 
