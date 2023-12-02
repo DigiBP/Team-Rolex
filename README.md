@@ -35,9 +35,10 @@ We envision that the currently used Swiss electronic health record (EHR; German:
 Our project aims at integrating a process which handles prescriptions with fully automated error preventive tools, stores data on the EHR, facilitates medication collection at pharmacies and simplifies interactions between involved health service providers. The integrated process we envision to apply even reduces the administrative workload of all stakeholders involved. In its entirety this will lead to secure, cost effective and streamlined workflows that result in most satisfied customers.
 
 ## Current As-Is-Process
+The following paragraph explains one of the current as is-processes.
+
 ![](./static/img/EHR-System-Rolex-asIs.png)
 
-The following paragraph explains one of the current as is-processes
 The process consists of four participants: the practitioner, the patient, the Swiss electronic health record (EHR) and the pharmacy.
 The process begins with the patient becoming sick.
 He/she then has to make an appointment at the practitioner, who asks about the current condition and takes the patient’s history. There is a possibility that the practitioner sends to or retrieves data from the EHR to fetch all required information and complete the medical history. In the next step the practitioner examines the patient and, depending on the suspected diagnosis and long-term medication, prescribes additional medication. The prescription is normally made on paper and handed to the patient along with medical advice. The patient has to take this paper prescription and needs to look for an available pharmacy. He/she goes to the pharmacy of his choice and if medication is in stock, the medication is prepared and double checked. Instructions are given by the pharmacy clerk and the medication is handed to the patient. If the medication is not in stock, it will have to be ordered from the distribution center and the patient has to come back to the pharmacy a second time to collect medication. After pick up of the medication and taking the medication as instructed by the doctor and the pharmacy clerk, the patient hopefully gets better again.
@@ -54,9 +55,10 @@ The interaction of doctor and pharmacy is often non-existent, as the doctor does
 ___________
 
 ## To-Be-Process
+The following paragraph details our conception of the to-be-process.
+
 ![](./static/img/EHR-System-Rolex-toBe.png)
 
-The following paragraph details our conception of the to-be-process.
 In our project we focus on the prescribing process and the automated handling within the Swiss electronic health record (EHR). The to-be-process involves a total of four stakeholders. Besides the existing EHR-process, these are the practitioner, the patient and the pharmacy. In our example, we use 6 pharmacies to represent the entire swiss pharmacy registry.
 
 Description of the eleven tasks of the to-be-process:
@@ -96,10 +98,10 @@ The processes are operated by the following tools:
 -	REST API server provided via Deepnote
 -	Voiceflow
 
-o	Start process and retrieve information from the initial Google forms message (Prescription) using “Make”.
-o	Prepare appropriate cancellation messages via our API and send those messages using “Make”
-o	Present the choice of pharmacy to the patient in a human-like manner using “Voiceflow”.
-o	Prepare appropriate confirmation messages via our API, Camunda and send those messages using “Make”
+# Start process and retrieve information from the initial Google forms message (Prescription) using “Make”.
+# Prepare appropriate cancellation messages via our API and send those messages using “Make”
+# Present the choice of pharmacy to the patient in a human-like manner using “Voiceflow”.
+# Prepare appropriate confirmation messages via our API, Camunda and send those messages using “Make”
 
 ### Benefits ✔️
 
