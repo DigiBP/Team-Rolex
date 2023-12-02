@@ -34,22 +34,78 @@ We envision that the currently used Swiss electronic health record (EHR; German:
 ## Goal 🎯
 Our project aims at integrating a process which handles prescriptions with fully automated error preventive tools, stores data on the EHR, facilitates medication collection at pharmacies and simplifies interactions between involved health service providers. The integrated process we envision to apply even reduces the administrative workload of all stakeholders involved. In its entirety this will lead to secure, cost effective and streamlined workflows that result in most satisfied customers.
 
-## Current As-Is Process
+## Current As-Is-Process
 ![](./static/img/EHR-System-Rolex-asIs.png)
 
+The following paragraph explains one of the current as is-processes
+The process consists of four participants: the practitioner, the patient, the Swiss electronic health record (EHR) and the pharmacy.
+The process begins with the patient becoming sick.
+He/she then has to make an appointment at the practitioner, who asks about the current condition and takes the patient’s history. There is a possibility that the practitioner sends to or retrieves data from the EHR to fetch all required information and complete the medical history. In the next step the practitioner examines the patient and, depending on the suspected diagnosis and long-term medication, prescribes additional medication. The prescription is normally made on paper and handed to the patient along with medical advice. The patient has to take this paper prescription and needs to look for an available pharmacy. He/she goes to the pharmacy of his choice and if medication is in stock, the medication is prepared and double checked. Instructions are given by the pharmacy clerk and the medication is handed to the patient. If the medication is not in stock, it will have to be ordered from the distribution center and the patient has to come back to the pharmacy a second time to collect medication. After pick up of the medication and taking the medication as instructed by the doctor and the pharmacy clerk, the patient hopefully gets better again.
 
 ___________
 
-### Issues with the current As-Is Process 🚩
+### Issues with the current As-Is-Process 🚩
+
+According to this process, there is neither an obligatory medication interaction check with other drugs, nor a check if the patient already takes the medication just prescribed. Although interactions are frequently checked by the doctor and the pharmacy respectively, they often lack the information about other prescriptions (handed out by other doctors) and medication dispensed by other pharmacies. As the patient is normally no health care professional, he/she often is not in a position to provide such crucial information required for an assessment.
+In addition, there is no check if the patient purchases the medication at all, and hence also no minimal check if he/she takes the medication prescribed.
+Another issue can be the handwriting of the practitioner. It can be hard to read the medication and dose strength written on the prescription. This could be another source of errors, e.g. giving the wrong medication to the patient.
+The interaction of doctor and pharmacy is often non-existent, as the doctor does not know which pharmacy will be chosen by the patient.
 
 ___________
 
-## To-Be Process
+## To-Be-Process
 ![](./static/img/EHR-System-Rolex-toBe.png)
 
+The following paragraph details our conception of the to-be-process.
+In our project we focus on the prescribing process and the automated handling within the Swiss electronic health record (EHR). The to-be-process involves a total of four stakeholders. Besides the existing EHR-process, these are the practitioner, the patient and the pharmacy. In our example, we use 6 pharmacies to represent the entire swiss pharmacy registry.
+
+Description of the eleven tasks of the to-be-process:
+1.	“NewPrescription”: Our process starts with prescribing medication for a patient. Here the practitioner uses a Prescription form (Google forms) where he/she has to provide the following information:
+a.	Patient name
+b.	Patient birthday
+c.	Patient email
+d.	Prescription
+e.	Doctor email
+The process is triggered by sending the form. We use “Make” to connect to our deployed Camunda process model and retrieve the information provided in Google forms.
+2.	“Topic: newPrescriptionForm“: This task assigns a topic name to the  individual process in order to facilitate the further processing operated through our REST API provided via Deepnote.
+3.	“check prescription”: This task checks if the prescribed medication exists in an official drug registry. This is done via our python programmed API relying on an API provided by the National Library of Medicine (supported by National Institute of Health)
+https://lhncbc.nlm.nih.gov/RxNav/APIs/InteractionAPIs.html
+If there is no match in the drug registry the process aborts with a cancellation message.
+If the medication exists in the drug registry the subsequent task will be executed.
+4.	“check patient”: This task will check if the provided patient name has been registered in the EHR. The information is provided via an http-connector to our API.
+If the patient name is not known the process will abort with a cancellation message to the practitioner.
+If the patient is registered in the EHR the subsequent task will be executed.
+5.	“check for duplication”: This task compares the newly created prescription with the already existing prescriptions in the EHR. This is also done via our API.
+If there is a duplicate prescription the process aborts with a cancellation message to the practitioner.
+If there is no duplicate prescription detected the subsequent task will be executed.
+6.	“check for interactions”: This task checks the new prescription with the already existing prescriptions for drug interactions. This is done in our API relying on an API provided by the National Library of Medicine (supported by National Institute of Health)
+https://lhncbc.nlm.nih.gov/RxNav/APIs/InteractionAPIs.html
+If an interaction is found, the process will abort with a cancellation message to the practitioner.
+If there is no interaction detected the next task will be executed.
+7.	“show available pharmacies”: If all checks are completed, a message is sent to the patient with the information that a prescription has been made and that he/she should select a pharmacy of his/her choice to collect the medication.
+A unique Process Instance ID and a link to a “Voiceflow”-chatbot are sent to the patient to highlight the choice of pharmacies.
+8.	“pharmacy chosen”: A) The patient chooses a pharmacy via the chatbot. The choice is automatically sent back to Camunda and will be processed in the next task.
+B) If the patient does not make a choice within 4 weeks the process will lead to the “create message for not collected prescription“-task, which modifies the message content. The process aborts with a cancellation message to the doctor.
+9.	“fetch Pharmacy Email”: The choice of the pharmacy needs to be processed in this task to guarantee a fully automated sequence. This task retrieves the information provided and prepares messages for the next tasks.
+10.	“update health information”: In this task the information is sent to the API and the EHR is updated with the new prescription.
+11.	“confirmation sent to patient/pharmacy/practitioner: After all tasks have been successfully processed, individual confirmation emails are sent to the patient, practitioner, and the pharmacy of choice.
+
+The processes are operated by the following tools:
+-	Camunda
+-	Make
+-	REST API server provided via Deepnote
+-	Voiceflow
+
+o	Start process and retrieve information from the initial Google forms message (Prescription) using “Make”.
+o	Prepare appropriate cancellation messages via our API and send those messages using “Make”
+o	Present the choice of pharmacy to the patient in a human-like manner using “Voiceflow”.
+o	Prepare appropriate confirmation messages via our API, Camunda and send those messages using “Make”
 
 ### Benefits ✔️
 
+A fully automated process is implemented and important safety checks are automatically integrated in our process. Erroneous events are reported with a short explanation and the prescription process is aborted automatically.
+Information about process participants are shared. In case of other unforeseen events communication partners are clear.
+The administrative workload is reduced for all stakeholders.
 
 ___________
 
