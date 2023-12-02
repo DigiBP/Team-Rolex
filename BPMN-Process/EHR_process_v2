@@ -574,7 +574,7 @@ email_content=object.email_content;</camunda:script>
 patient_name: string
 birthday: string
 prescription: string
-doctor email: string
+doctor_email: string
 patient_email: string
 process_instance_id: string</bpmn:text>
     </bpmn:textAnnotation>
@@ -733,7 +733,7 @@ process_instance_id: string</bpmn:text>
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_119kmu7_di" bpmnElement="TextAnnotation_119kmu7">
-        <dc:Bounds x="170" y="460" width="193.98930813747026" height="112.99037328482179" />
+        <dc:Bounds x="170" y="460" width="193.98907103825132" height="112.98320332511527" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_18ftpve_di" bpmnElement="TextAnnotation_18ftpve">
