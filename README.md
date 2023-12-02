@@ -37,7 +37,7 @@ Our project aims at integrating a process which handles prescriptions with fully
 ## Current As-Is-Process
 The following paragraph explains one of the current as is-processes.
 
-![](./static/img/EHR-System-Rolex-asIs.png)
+![]()
 
 The process consists of four participants: the practitioner, the patient, the Swiss electronic health record (EHR) and the pharmacy.
 The process begins with the patient becoming sick.
