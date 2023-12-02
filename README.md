@@ -90,7 +90,7 @@ A unique Process Instance ID and a link to a “Voiceflow”-chatbot are sent to
 B) If the patient does not make a choice within 4 weeks the process will lead to the “create message for not collected prescription“-task, which modifies the message content. The process aborts with a cancellation message to the doctor.
 9.	“fetch Pharmacy Email”: The choice of the pharmacy needs to be processed in this task to guarantee a fully automated sequence. This task retrieves the information provided and prepares messages for the next tasks.
 10.	“update health information”: In this task the information is sent to the API and the EHR is updated with the new prescription.
-11.	“confirmation sent to patient/pharmacy/practitioner: After all tasks have been successfully processed, individual confirmation emails are sent to the patient, practitioner, and the pharmacy of choice.
+11.	“confirmation sent to patient/pharmacy/practitioner": After all tasks have been successfully processed, individual confirmation emails are sent to the patient, practitioner, and the pharmacy of choice.
 
 The processes are operated by the following tools:
 -	Camunda
@@ -98,6 +98,7 @@ The processes are operated by the following tools:
 -	REST API server provided via Deepnote
 -	Voiceflow
 
+### Fully automated process
 #### Start process and retrieve information from the initial Google forms message (Prescription) using “Make”.
 #### Prepare appropriate cancellation messages via our API and send those messages using “Make”
 #### Present the choice of pharmacy to the patient in a human-like manner using “Voiceflow”.
@@ -112,8 +113,6 @@ The administrative workload is reduced for all stakeholders.
 ___________
 
 ### Scenario
-
-## Fully automated process
 
 ## Conclusion
 
