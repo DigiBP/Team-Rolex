@@ -25,6 +25,12 @@
         p {
             font-size: 1.5em;
         }
+
+        video {
+            width: 50%;
+            max-width: 100%;
+            margin-top: 20px;
+        }
     </style>
     <title>Fast Medication Automation</title>
 </head>
@@ -32,21 +38,23 @@
     <h1>Fast Medication Automation</h1>
     <p>Choose your Pharmacy!</p>
 
-  
+    <video controls>
+        <source src="medicine_-_54756 (540p).mp4">
+        Your browser does not support the video tag.
+    </video>
 
+    <script type="text/javascript">
+        (function(d, t) {
+            var v = d.createElement(t), s = d.getElementsByTagName(t)[0];
+            v.onload = function() {
+              window.voiceflow.chat.load({
+                verify: { projectID: '653972e2493133000741546f' },
+                url: 'https://general-runtime.voiceflow.com',
+                versionID: 'production'
+              });
+            }
+            v.src = "https://cdn.voiceflow.com/widget/bundle.mjs"; v.type = "text/javascript"; s.parentNode.insertBefore(v, s);
+        })(document, 'script');
+    </script>
 </body>
-
-<script type="text/javascript">
-    (function(d, t) {
-        var v = d.createElement(t), s = d.getElementsByTagName(t)[0];
-        v.onload = function() {
-          window.voiceflow.chat.load({
-            verify: { projectID: '653972e2493133000741546f' },
-            url: 'https://general-runtime.voiceflow.com',
-            versionID: 'production'
-          });
-        }
-        v.src = "https://cdn.voiceflow.com/widget/bundle.mjs"; v.type = "text/javascript"; s.parentNode.insertBefore(v, s);
-    })(document, 'script');
-</script>
 </html>
