@@ -121,32 +121,33 @@ ___________
 ### Scenarios
 #### Scenario 1: Practitioner sends new prescription, and if the patient does not exist in the database, the prescription gets cancelled, and the practitioner is notified.
 
-![]("static/img/e-mail_cancel_not_existing.jpg")
+![](static/img/e-mail_cancel_not_existing.jpg)
 
 
 #### Scenario 2: Practitioner sends new prescription, if the prescription doesn´t exist the process gets cancelled, and the practitioner is notified. If it exists, the process continues.
 
-![]("static/img/e-mail_no_prescription.jpg")
+![](static/img/e-mail_no_prescription.jpg)
 
 #### Scenario 3: Practitioner sends new prescription, which exists, and the patient gets verified if it exists on the database. If it doesn´t exist, the process is cancelled, and the practitioner is notified. If the patient exists, the process continues.
 
-![]("static/img/e-mail_patient_accepted.jpg")
+![](static/img/e-mail_patient_accepted.jpg)
 
 #### Scenario 4: Practitioner sends new prescription, which, if it exists, and the patient is in the database, then a check for duplicated is performed. If the new prescription for this patient is duplicated, the process is cancelled. Otherwise, the process continues.
 
-![]("static/img/e-mail_duplicate.jpg")
+![](static/img/e-mail_duplicate.jpg)
 
 #### Scenario 5: Practitioner sends new prescription. If prescription exists, the patient is in the database, and it`s not a duplicate, then a check for interactions with other drugs is performed. If there is any interaction, the process is cancelled, and the practitioner is notified.
 
-![]("static/img/e-mail_interaction.jpg")
+![](static/img/e-mail_interaction.jpg)
 
 #### Scenario 6: Practitioner sends new prescription. If prescription exists, the patient is in the database, it`s not a duplicate and there are no interactions, then the patient gets a message showing pharmacy options where to get the prescription. If there is no reply in a 4 weeks’ time window, a message indicating that the prescription has not been collected is sent and the process is cancelled, and the practitioner gets notified. Otherwise, the patient chooses the pharmacy, and the health information is updated in the EHR. Then, confirmation messages are sent to the pharmacy, the patient, and the doctor.
 
-![]("static/img/e-mail_not_collected.jpg")
+![](static/img/e-mail_not_collected.jpg)
 
-![]("static/img/e-mail_doctor.jpg")
+![](static/img/e-mail_doctor.jpg)
 
-![]("static/img/e-mail_pharmacy_patient.jpg")
+![](static/img/e-mail_pharmacy_patient.jpg)
+
 ## Conclusion
 
 ![](./static/img/logon.jpg)
