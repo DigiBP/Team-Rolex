@@ -72,7 +72,7 @@ e.	Doctor email
 The process is triggered by sending the form. We use “Make” to connect to our deployed Camunda process model and retrieve the information provided in Google forms.
 2.	“Topic: newPrescriptionForm“: This task assigns a topic name to the  individual process in order to facilitate the further processing operated through our REST API provided via Deepnote.
 3.	“check prescription”: This task checks if the prescribed medication exists in an official drug registry. This is done via our python programmed API relying on an API provided by the National Library of Medicine (supported by National Institute of Health)
-https://lhncbc.nlm.nih.gov/RxNav/APIs/InteractionAPIs.html
+https://rxnav.nlm.nih.gov/REST/rxcui
 If there is no match in the drug registry the process aborts with a cancellation message.
 If the medication exists in the drug registry the subsequent task will be executed.
 4.	“check patient”: This task will check if the provided patient name has been registered in the EHR. The information is provided via an http-connector to our API.
@@ -138,3 +138,4 @@ Fort this project, as we are in a testing environment with fictional data, the r
 
 3.	Our project aims to connect to the EHR. Therefore, only registered patients will be able to enjoy full service. As we created only a very simplified registry, we work with names instead of unique identifying numbers like the AHV-number.
 
+4. Our project aims to send emails to choosen pharmacies by patient. However, the pharmacy e-mail addresses are fictional and are changed by real e-mail address upon production
