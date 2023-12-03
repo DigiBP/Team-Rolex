@@ -58,7 +58,7 @@ ___________
 ## To-Be-Process
 The following paragraph details our conception of the to-be-process.
 
-![](./static/img/EHR-System-Rolex-toBe2.png)
+![](./static/img/EHR-System-Rolex-toBe3.png)
 
 In our project we focus on the prescribing process and the automated handling within the Swiss electronic health record (EHR). The to-be-process involves a total of four stakeholders. Besides the existing EHR-process, these are the practitioner, the patient and the pharmacy. In our example, we use 6 pharmacies to represent the entire swiss pharmacy registry.
 
