@@ -12,12 +12,27 @@ log_file_path = './log6.log'
 logging.basicConfig(filename=log_file_path, level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 camunda_api_url = 'https://digibp.herokuapp.com/engine-rest'
+
+# NLM API to identify drugs by rxNorms 
+    # and resolve the error of misspelling or not existing pharmaceutical ingredient
 rxcui_api_url = 'https://rxnav.nlm.nih.gov/REST/rxcui.json?'
+
+# NLM API for drug Interaction discovery
+    # and checks if interactions with other drugs is performed
 interaction_api_url = 'https://rxnav.nlm.nih.gov/REST/interaction/list.json'
-filepath = './patient_data.csv'
+
+# The EHR database consist out of the following column's:
+    # patient_id --> as described in the disclaimer in production this ID shall be replaced by AHV-Nr.
+    # patient_name
+    # birthday
+    # gender
+    # prescription --> this is a comma separated list of active pharmaceutical ingredients that are already prescribed.
+filepath = './patient_data.csv' 
+    
 
 # Database Queries
 ##################
+# Check if patient exists in database by `patient_name`
 def existsPatientInCsv(filepath, patient_name):    
     with open(filepath, mode='r', newline='') as file:
         csv_reader = csv.DictReader(file)
@@ -26,6 +41,7 @@ def existsPatientInCsv(filepath, patient_name):
                 return True
     return False
 
+# Finds patient in database by `patient_name`
 def getPatientEntityFromCsv(filepath, patient_name_to_check):    
     with open(filepath, mode='r', newline='') as file:
         csv_reader = csv.DictReader(file)
@@ -34,6 +50,8 @@ def getPatientEntityFromCsv(filepath, patient_name_to_check):
                 return row
     return None
 
+# This method is not used, as the disclaimer describes 
+# Our project aims to connect to the EHR. Therefore, only registered patients will be able to enjoy full service.
 def addPatientToCsv(filepath, filename, patient_rec):
         df_patient = pd.read_csv(filepath)
         patient_rec["patient_id"] = max(df_patient["patient_id"]) + 1
@@ -47,8 +65,12 @@ def addPatientToCsv(filepath, filename, patient_rec):
 
         return obj
 
-# Helper Methods
+# Helper Methods for API-Requests
 ################
+
+# Extract data from a json request (patient_name, birthday, prescription, process_instance_id)
+    # The process_instance_id is used to identify the process later on, for key_correlation of camunda's tasks called:
+    # MESSAGE_INTERMEDIATE_CATCH_EVENT: pharmacy choosen
 def extractPatientDetailsFromRequest(request_data):    
     patient_name = request_data['patient_name']
     patient_birthday = request_data['birthday']
@@ -56,16 +78,18 @@ def extractPatientDetailsFromRequest(request_data):
     process_instance_id = request_data['process_instance_id']
     return patient_name, patient_birthday, patient_prescription, process_instance_id
 
+# Extract data from a json request, which is used to sent an email
 def extractConfirmationEmailFromRequest(request_data):    
     patient_name = request_data['patient_name']    
     patient_birthday = request_data['birthday']    
-    patient_prescription = request_data['prescription']    
-    pharmacych = request_data['pharmacych']    
-    email_patient = request_data['email_patient']    
+    patient_prescription = request_data['prescription']        
+    pharmacych = request_data['pharmacych']        
+    email_patient = request_data['email_patient']        
     email_doctor = request_data['email_doctor']    
     
     return patient_name, patient_birthday, patient_prescription, email_patient, email_doctor, pharmacych
 
+# Generates the json-body as response to be sent to camunda
 def generateCheckPatientDataResponse(status, message, patient_name, birthday, prescription):
     value = {
         "status": status,
@@ -76,6 +100,7 @@ def generateCheckPatientDataResponse(status, message, patient_name, birthday, pr
     }    
     return json.dumps(value)
 
+# Generated the json-body as response by email to be sent to camunda and make
 def generateConfirmationEmailResponse(patient_name, birthday, prescription, email_doctor, email_patient, email_pharmacy, email_content):
     value = {
         "patient_name": patient_name,
@@ -88,8 +113,10 @@ def generateConfirmationEmailResponse(patient_name, birthday, prescription, emai
     }    
     return json.dumps(value)
 
+# Template for equal email styles.
 def emailResponseTempalte(method, title, text):
     return "<p>" + method + " " + title + " </p><p>" + text + "</p>"
+
 
 
 
@@ -100,8 +127,14 @@ import shutil
 #############
 @app.route("/")
 def ehr_app():
-    return "This is an Electronic Health Record service."
+    return "This is an Automated Electronic Health Record service."
 
+# This endpoint checks if the prescribed medication exists in an official drug registry.
+# This is done via the API provided by the National Library of Medicine (supported by National Institute of Health)
+# https://rxnav.nlm.nih.gov/REST/rxcui
+    # Rules:
+        # If there is no match in the drug registry the process aborts with a cancellation message. 
+        # If the medication exists in the drug registry the subsequent task will be executed.
 @app.route('/prescription/check', methods=['POST'])
 def checkPrescriptionExists():
     print("called /prescription/check")       
@@ -120,10 +153,10 @@ def checkPrescriptionExists():
         return response, 404
     return {"error": "Request must be JSON"}, 415
 
-# @Bojana
-# 1. Fetch the patient_id, patient_name, birthday, perscription from request
-# 2. check if database contains patient_name    
-# 3. return whether patient exists or not
+# This endpoint will check if the provided patient name has been registered in the EHR. 
+    # Rules:
+        # If the patient name is not known the process will abort with a cancellation message to the practitioner.
+        # If the patient is registered in the EHR the subsequent task will be executed.
 @app.route('/patient/check', methods=['POST'])
 def checkPatientData():
     print("called /patient/check")       
@@ -140,49 +173,42 @@ def checkPatientData():
             return response, 200
         else:
             logger.info('Patient not found.')
-            email_content = emailResponseTempalte("NOT EXISTENT", " - Perscription Canceled", "You are not registered to the EHR System and thus not allowed to use it.")
+            email_content = emailResponseTempalte("NOT EXISTENT", " - Perscription Canceled", "Your patient is not registered to the EHR System.")
             response = generateCheckPatientDataResponse("false", email_content, name, birthday, prescription)
             print(response)
             return response, 404
     return {"error": "Request must be JSON"}, 415
 
-# @Gerardo
-# 1. Fetch the patient_id, patient_name, perscription from request
-# 2. you can take example of checking for duplicates from the following Method 'existsPatientInCsv'...
-        # but prevent the early stopping and work with a index counter (like counting how many times patient_name and perscription occur in the DB)
-# 3. evaluate the index counter
-# if counter > 1 => return true
-# if counter < 1 => return false
-# if counter == 1 => return true
-# 4. return whether you are successfull or not
+
+# This endpoint compares the newly created prescription with the already existing prescriptions in the EHR.
+    # Rules:
+        # If there is a duplicate prescription the process aborts with a cancellation message to the practitioner.
+        # If there is no duplicate prescription detected the subsequent task will be executed.
 @app.route('/patient/check/duplicates', methods=['POST'])
 def checkForDuplicates():
+    print("called /patient/check/duplicates")
     if request.is_json:
-        print("called /patient/check/duplicates")
         name, birthday, prescription, process_instance_id = extractPatientDetailsFromRequest(request.json)
-        has_duplicate = False
-        with open(filepath, mode='r', newline='') as file:
-            csv_reader = csv.DictReader(file)
-            counter = 0
-            for row in csv_reader:
-                if (row["patient_name"] == name and prescription in row["prescription"]):
-                    counter += 1            
-            if counter < 1:
-                has_duplicate = False
-            elif counter == 1:
-                has_duplicate = False #True
-            else:
-                has_duplicate = False #True
-        response = generateCheckPatientDataResponse(str(has_duplicate), "duplication", name, birthday, prescription)
-        print(response)
-        return response, 201    
+        search_duplicate_prescription = prescription
+        patient = getPatientEntityFromCsv(filepath, name) # fetch existing prescriptions
+        previous_prescription_list = patient['prescription'].split(",")
+        if any(word in search_duplicate_prescription for word in previous_prescription_list):
+            email_content = emailResponseTempalte("DUPLICATE", " - Prescription Canceled", "Your patient has already a similar prescription in our system. To avoid double medication your prescription has been canceled.")
+            response = generateCheckPatientDataResponse("true", email_content, name, birthday, prescription)
+            print(response)
+            return response, 200
+        else:
+            response = generateCheckPatientDataResponse("false", "no duplicates", name, birthday, prescription)
+            print(response)
+            return response, 200    
     return {"error": "Request must be JSON"}, 415
-  
 
-# @Sebastian
-# 1. Fetch the patient_id, patient_name, birthday, perscription from request
-# 2. get list of perscriptions in database for patient_name
-# 3. return if drug-interactions (true/false)
+# This endpoint checks the new prescription with the already existing prescriptions for drug interactions. 
+# This is done in the API provided by the National Library of Medicine (supported by National Institute of Health)
+# https://lhncbc.nlm.nih.gov/RxNav/APIs/InteractionAPIs.html 
+    # Rules:
+        # If an interaction is found, the process will abort with a cancellation message to the practitioner.
+        # If there is no interaction detected the next task will be executed.
 @app.route('/patient/check/interactions', methods=['POST'])
 def checkForInteraction():
     print("/patient/check/interactions")
@@ -210,11 +236,8 @@ def checkForInteraction():
         return response, 200
     return {"error": "Request must be JSON"}, 415
 
-# @Magdalena
-# 1. Fetch the patient_id, patient_name, birthday, perscription from request
-# 2. parse the parameters form the request and generate a comman separated string        
-# 3. update the perscription with (',') in the csv
-# 4. return whether you are successfull or not
+
+# This endpoint updates the EHR with the new prescription.
 @app.route('/patient/updateHealthInformation', methods=['POST'])
 def updateHealthInformation():
     if request.is_json:
@@ -251,6 +274,9 @@ def updateHealthInformation():
     return {"error": "Request must be JSON"}, 415
 
 
+# This endpoint creates the response for camunda to collect all neccessary e-mail addresses. 
+# Disclaimer: Our project aims to send emails to choosen pharmacies by patient. 
+    # However, the pharmacy e-mail addresses are fictional and are changed by real e-mail address upon production
 @app.route('/confirmation/email', methods=['POST'])
 def confirmEmail():
     if request.is_json:
@@ -274,6 +300,19 @@ def confirmEmail():
         print(response)
         return response, 200        
     return {"error": "Request must be JSON"}, 415
+
+# This endpoint creates the response for camunda in case the patient did not respond nor collected his prescription
+@app.route('/notcollected/email', methods=['POST'])
+def notcollectedEmail():
+    if request.is_json:
+        print("/notcollected/email")                
+        name, birthday, prescription, email_patient, email_doctor, pharmacych = extractConfirmationEmailFromRequest(request.json)               
+        email_content = emailResponseTempalte("NOT COLLECTED WITHIN 4 WEEKS", " - Perscription Canceled", "Your patient did not collect prescription within 4 weeks.")
+        response = generateCheckPatientDataResponse(True, email_content, name, birthday, prescription)
+        print(response)
+        return response, 200        
+    return {"error": "Request must be JSON"}, 415
+
 
 # Drug Interaction API
 ######################
