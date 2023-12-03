@@ -118,7 +118,13 @@ The administrative workload is reduced for all stakeholders.
 
 ___________
 
-### Scenario
+### Scenarios
+#### Scenario 1: Practitioner sends new prescription, and if the patient does not exist in the database, the prescription gets cancelled, and the practitioner is notified.
+#### Scenario 2: Practitioner sends new prescription, if the prescription doesn´t exist the process gets cancelled, and the practitioner is notified. If it exists, the process continues.
+#### Scenario 3: Practitioner sends new prescription, which exists, and the patient gets verified if it exists on the database. If it doesn´t exist, the process is cancelled, and the practitioner is notified. If the patient exists, the process continues.
+#### Scenario 4: Practitioner sends new prescription, which, if it exists, and the patient is in the database, then a check for duplicated is performed. If the new prescription for this patient is duplicated, the process is cancelled. Otherwise, the process continues.
+#### Scenario 5: Practitioner sends new prescription. If prescription exists, the patient is in the database, and it`s not a duplicate, then a check for interactions with other drugs is performed. If there is any interaction, the process is cancelled, and the practitioner is notified.
+#### Scenario 6: Practitioner sends new prescription. If prescription exists, the patient is in the database, it`s not a duplicate and there are no interactions, then the patient gets a message showing pharmacy options where to get the prescription. If there is no reply in a 4 weeks’ time window, a message indicating that the prescription has not been collected is sent and the process is cancelled, and the practitioner gets notified. Otherwise, the patient chooses the pharmacy, and the health information is updated in the EHR. Then, confirmation messages are sent to the pharmacy, the patient, and the doctor.
 
 ## Conclusion
 
