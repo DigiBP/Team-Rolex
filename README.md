@@ -101,8 +101,8 @@ The processes are operated by the following tools:
 
 ### Fully automated process
 #### Start process and retrieve information from the initial Google forms message (Prescription) using “Make”.
-<img src=./static/img/Prescription_google_forms.png ="100" height="100">
-<img src="[Prescription_google_forms](https://github.com/DigiBP/Team-Rolex/assets/149074725/37167202-5671-4ff1-acd9-fbe987988004)" width="100" height="100">
+<img src=./static/img/Prescription_google_forms.png height=50%>
+<img src="https://github.com/DigiBP/Team-Rolex/assets/149074725/37167202-5671-4ff1-acd9-fbe987988004" width="100" height="100">
 ![](./static/img/Prescription_google_forms.png)
 #### Prepare appropriate cancellation messages via our API and send those messages using “Make”
 ![](./static/img/Make_sendCancellation.png)
