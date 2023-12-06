@@ -107,7 +107,7 @@ The processes are operated by the following tools:
 <img src="./static/img/Make_sendCancellation.png" width=75% height=75%>
 
 #### Present the choice of pharmacy to the patient in a human-like manner using “Voiceflow”.
-<img src="./static/img/chatbot_voiceflow.png" width=30% height=30%>
+<img src="./static/img/chatbot_voiceflow1.png" width=30% height=30%>
 
 <img src="./static/img/voiceflow_design.png" width=75% height=75%>
 
