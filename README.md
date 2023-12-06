@@ -182,6 +182,8 @@ ___________
 ## Conclusion
 Fast Medication Automation – the future of prescribing medicine is here! Our integrated and fully automated solution addresses and resolves many critical aspects in the process of prescribing medicine. Our proposed process is expected to significantly reduce the number of erroneously prescribed medicines through process automation. Patient safety is enhanced by unambiguous assignment of the medicine, background checks for previous prescriptions and drug interactions, as well as automated notifications and reminders. Using cutting-edge technology, the administrative workload for all stakeholders involved is reduced through highly automated processes, while the level of communication is enhanced by automated status updates. These status updates further allow to enhance patient compliance. Finally, we believe that our solution can revolutionize the way medicine is prescribed and resolve an issue not only in the Swiss healthcare system.
 
+
+
 ![](./static/img/logon.jpg)
 
 ## Disclaimer
@@ -193,3 +195,11 @@ Fort this project, as we are in a testing environment with fictional data, the r
 3.	Our project aims to connect to the EHR. Therefore, only registered patients will be able to enjoy full service. As we created only a very simplified registry, we work with names instead of unique identifying numbers like the AHV-number.
 
 4. Our project aims to send emails to the pharmacies selected by the patient. In the current test version, the pharmacy email addresses are fictional and will be replaced by real email addresses when switching to the productive system.
+
+## Acknowledgment
+We would like to thank Charuta and Andreas for their precious coaching and support throughout the project. Their critical questions and valued input helped us to constantly improve our process.
+
+## References
+
+https://patientensicherheit.ch/nationale-programme/implementierungsprogramme/sichere-medikation-an-schnittstellen/
+https://www.patientrecord.ch/individuals
