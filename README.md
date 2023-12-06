@@ -101,7 +101,7 @@ The processes are operated by the following tools:
 
 ### Fully automated process
 #### Start process and retrieve information from the initial Google forms message (Prescription) using “Make”.
-![](./static/img/Prescription_google_forms.png)
+![](./static/img/Prescription_google_forms.png | width=100)
 #### Prepare appropriate cancellation messages via our API and send those messages using “Make”
 ![](./static/img/Make_sendCancellation.png)
 #### Present the choice of pharmacy to the patient in a human-like manner using “Voiceflow”.
