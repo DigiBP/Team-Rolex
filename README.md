@@ -105,11 +105,14 @@ The processes are operated by the following tools:
 
 #### Prepare appropriate cancellation messages via our API and send those messages using “Make”
 <img src="./static/img/Make_sendCancellation.png" width=50% height=50%>
+
 #### Present the choice of pharmacy to the patient in a human-like manner using “Voiceflow”.
-<img src="./static/img/chatbot_voiceflow.png" width=50% height=50%>
-<img src="./static/img/voiceflow_design.png" width=50% height=50%>
+<img src="./static/img/chatbot_voiceflow.png" width=30% height=30%>
+
+<img src="./static/img/voiceflow_design.png" width=75% height=75%>
+
 #### Prepare appropriate confirmation messages via our API, Camunda and send those messages using “Make”
-<img src="./static/img/Make_emailConformation.png" width=50% height=50%>
+<img src="./static/img/Make_emailConformation.png" width=75% height=75%>
 
 ### Benefits ✔️
 
