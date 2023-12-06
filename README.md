@@ -122,6 +122,34 @@ The administrative workload is reduced for all stakeholders.
 
 ___________
 
+### Running the Process
+
+#### First step:
+
+Please fill in the Google Form: [Prescription](https://docs.google.com/forms/d/e/1FAIpQLSfstGW4yB3cxIRQ82-GTqZaBRwxqpLLB7HepLd9glbCm5asEA/viewform). We recommend to try it out with the following data:
+
+- Patient name: Adrian Wu
+- Birthday: 10/01/1994
+- Patient e-mail: please use an e-mail you can access to check the messaging derived from the process.
+- Prescription: Ascorbic Acid (Ascorbic Acid is proven to not have interactions with other drugs. Other drugs could have interactions and then the process gets cancelled).
+- Your e-mail: please use an e-mail you can access to check the messaging derived from the process.
+
+#### Second step:
+
+You will get an e-mail indicating that the prescription has been succesfully recevied, and from here you get a link to the VoiceFlow Chat where you can select the pharmacy from where you would like to pick up the medication. In this e-mail you will find a process instance ID (with this format: 93546de0-9398-11ee-a701-c299aba011e6) that has to be entered on the VoiceFlow Chat ([Choose your pharmacy](https://digibp.github.io/Team-Rolex/))
+
+#### Third step:
+
+Please enter the process instance ID on the VoiceFlow Chat and select the most convenient pharmacy for you.
+
+#### Fourth Step:
+
+Once you have chosen the pharmacy, a notification is sent to the practitioner, the pharmacy, and the patient, and the process is succesfully ended.
+
+
+
+___________
+
 ### Scenarios
 #### Scenario 1: Practitioner sends new prescription, and if the patient does not exist in the database, the prescription gets cancelled, and the practitioner is notified.
 
