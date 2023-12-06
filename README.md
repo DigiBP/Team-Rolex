@@ -104,7 +104,7 @@ The processes are operated by the following tools:
 <img src="./static/img/Prescription_google_forms.png" width=50% height=50%>
 
 #### Prepare appropriate cancellation messages via our API and send those messages using “Make”
-<img src="./static/img/Make_sendCancellation.png" width=50% height=50%>
+<img src="./static/img/Make_sendCancellation.png" width=75% height=75%>
 
 #### Present the choice of pharmacy to the patient in a human-like manner using “Voiceflow”.
 <img src="./static/img/chatbot_voiceflow.png" width=30% height=30%>
@@ -125,32 +125,31 @@ ___________
 ### Scenarios
 #### Scenario 1: Practitioner sends new prescription, and if the patient does not exist in the database, the prescription gets cancelled, and the practitioner is notified.
 
-![](static/img/e-mail_cancel_not_existing.jpg)
-
+<img src="./static/img/e-mail_cancel_not_existing.jpg" width=50% height=50%>
 
 #### Scenario 2: Practitioner sends new prescription, if the prescription doesn´t exist the process gets cancelled, and the practitioner is notified. If it exists, the process continues.
 
-![](static/img/e-mail_no_prescription.jpg)
+<img src="./static/img/e-mail_no_prescription.jpg" width=50% height=50%>
 
 #### Scenario 3: Practitioner sends new prescription, which exists, and the patient gets verified if it exists on the database. If it doesn´t exist, the process is cancelled, and the practitioner is notified. If the patient exists, the process continues.
 
-![](static/img/e-mail_patient_accepted.jpg)
+<img src="./static/img/e-mail_patient_accepted.jpg" width=50% height=50%>
 
 #### Scenario 4: Practitioner sends new prescription, which, if it exists, and the patient is in the database, then a check for duplicated is performed. If the new prescription for this patient is duplicated, the process is cancelled. Otherwise, the process continues.
 
-![](static/img/e-mail_duplicate.jpg)
+<img src="./static/img/e-mail_duplicate.jpg" width=50% height=50%>
 
 #### Scenario 5: Practitioner sends new prescription. If prescription exists, the patient is in the database, and it`s not a duplicate, then a check for interactions with other drugs is performed. If there is any interaction, the process is cancelled, and the practitioner is notified.
 
-![](static/img/e-mail_interaction.jpg)
+<img src="./static/img/e-mail_interaction.jpg" width=50% height=50%>
 
 #### Scenario 6: Practitioner sends new prescription. If prescription exists, the patient is in the database, it`s not a duplicate and there are no interactions, then the patient gets a message showing pharmacy options where to get the prescription. If there is no reply in a 4 weeks’ time window, a message indicating that the prescription has not been collected is sent and the process is cancelled, and the practitioner gets notified. Otherwise, the patient chooses the pharmacy, and the health information is updated in the EHR. Then, confirmation messages are sent to the pharmacy, the patient, and the doctor.
 
-![](static/img/e-mail_not_collected.jpg)
+<img src="./static/img/e-mail_not_collected.jpg" width=50% height=50%>
 
-![](static/img/e-mail_doctor.jpg)
+<img src="./static/img/e-mail_doctor.jpg" width=50% height=50%>
 
-![](static/img/e-mail_pharmacy_patient.jpg)
+<img src="./static/img/e-mail_pharmacy_patient.jpg" width=50% height=50%>
 
 ## Conclusion
 
