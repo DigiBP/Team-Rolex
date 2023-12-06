@@ -104,12 +104,12 @@ The processes are operated by the following tools:
 <img src="./static/img/Prescription_google_forms.png" width=50% height=50%>
 
 #### Prepare appropriate cancellation messages via our API and send those messages using “Make”
-![](./static/img/Make_sendCancellation.png)
+<img src="./static/img/Make_sendCancellation.png" width=50% height=50%>
 #### Present the choice of pharmacy to the patient in a human-like manner using “Voiceflow”.
-![](./static/img/chatbot_voiceflow.png)
-![](./static/img/voiceflow_design.png)
+<img src="./static/img/chatbot_voiceflow.png" width=50% height=50%>
+<img src="./static/img/voiceflow_design.png" width=50% height=50%>
 #### Prepare appropriate confirmation messages via our API, Camunda and send those messages using “Make”
-![](./static/img/Make_emailConformation.png)
+<img src="./static/img/Make_emailConformation.png" width=50% height=50%>
 
 ### Benefits ✔️
 
