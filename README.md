@@ -102,6 +102,7 @@ The processes are operated by the following tools:
 ### Fully automated process
 #### Start process and retrieve information from the initial Google forms message (Prescription) using “Make”.
 <img src="./static/img/Prescription_google_forms.png" width=50% height=50%>
+<img src="./static/img/Make_Prescription_registration.png" width=75% height=75%>
 
 #### Prepare appropriate cancellation messages via our API and send those messages using “Make”
 <img src="./static/img/Make_sendCancellation.png" width=75% height=75%>
