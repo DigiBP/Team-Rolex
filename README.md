@@ -22,8 +22,8 @@
 - Postman Collection: [Postman](https://api.postman.com/collections/17747638-4a7ad2fc-d1fb-44e6-83de-47e54acbad06?access_key=PMAT-01HFJ0GZEPAGA1G9RVPENQW5PT)
 
 ## Coach
-- Andreas Martin
 - Charuta Panda
+- Andreas Martin
 
 ## Introduction
 This repository contains our group project contribution to the “Digitalization of Business Processes in Healthcare” module at FHNW.
@@ -180,6 +180,7 @@ ___________
 <img src="./static/img/e-mail_pharmacy_patient.jpg" width=50% height=50%>
 
 ## Conclusion
+Fast Medication Automation – the future of prescribing medicine is here! Our integrated and fully automated solution addresses and resolves many critical aspects in the process of prescribing medicine. Our proposed process is expected to significantly reduce the number of erroneously prescribed medicines through process automation. Patient safety is enhanced by unambiguous assignment of the medicine, background checks for previous prescriptions and drug interactions, as well as automated notifications and reminders. Using cutting-edge technology, the administrative workload for all stakeholders involved is reduced through highly automated processes, while the level of communication is enhanced by automated status updates. These status updates further allow to enhance patient compliance. Finally, we believe that our solution can revolutionize the way medicine is prescribed and resolve an issue not only in the Swiss healthcare system.
 
 ![](./static/img/logon.jpg)
 
@@ -191,4 +192,4 @@ Fort this project, as we are in a testing environment with fictional data, the r
 
 3.	Our project aims to connect to the EHR. Therefore, only registered patients will be able to enjoy full service. As we created only a very simplified registry, we work with names instead of unique identifying numbers like the AHV-number.
 
-4. Our project aims to send emails to choosen pharmacies by patient. However, the pharmacy e-mail addresses are fictional and are changed by real e-mail address upon production
+4. Our project aims to send emails to the pharmacies selected by the patient. In the current test version, the pharmacy email addresses are fictional and will be replaced by real email addresses when switching to the productive system.
