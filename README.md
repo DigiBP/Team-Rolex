@@ -126,25 +126,45 @@ ___________
 
 ### Running the Process
 
-#### 1. First step:
+#### 1. First Step:
+
+Please open the DeepNote notebooks ([DeepNote](https://deepnote.com/workspace/daught-90c8f362-c010-4677-9f84-fd2c734b75ff/project/Sebastians-Untitled-project-927aa70e-3479-4236-ae8d-88111fb4fd4f/notebook/EHR-System-6c884184676d4ab89132c5ffc9ce726a?), and run the EHR-System and ExternalTaskWorker notebooks.
+
+#### 1. Second step:
 
 Please fill in the Google Form: [Prescription](https://docs.google.com/forms/d/e/1FAIpQLSfstGW4yB3cxIRQ82-GTqZaBRwxqpLLB7HepLd9glbCm5asEA/viewform). We recommend to try it out with the following data:
 
+ Option 1:
 - Patient name: Adrian Wu
 - Birthday: 10/01/1994
 - Patient e-mail: please use an e-mail you can access to check the messaging derived from the process.
 - Prescription: Ascorbic Acid (Ascorbic Acid is proven to not have interactions with other drugs. Other drugs could have interactions and then the process gets cancelled).
 - Your e-mail: please use an e-mail you can access to check the messaging derived from the process.
 
-#### 2. Second step:
+  Option 2:
+- Patient name: Gregory Woods
+- Birthday: 10/03/1954
+- Patient e-mail: please use an e-mail you can access to check the messaging derived from the process.
+- Prescription: Ascorbic Acid (Ascorbic Acid is proven to not have interactions with other drugs. Other drugs could have interactions and then the process gets cancelled).
+- Your e-mail: please use an e-mail you can access to check the messaging derived from the process.
+
+  Option 3:
+- Patient name: Megan Morris
+- Birthday: 09/01/2000
+- Patient e-mail: please use an e-mail you can access to check the messaging derived from the process.
+- Prescription: Ascorbic Acid (Ascorbic Acid is proven to not have interactions with other drugs. Other drugs could have interactions and then the process gets cancelled).
+- Your e-mail: please use an e-mail you can access to check the messaging derived from the process.
+
+  
+#### 2. Third step:
 
 You will get an e-mail indicating that the prescription has been succesfully recevied, and from here you get a link to the VoiceFlow Chat where you can select the pharmacy from where you would like to pick up the medication. In this e-mail you will find a process instance ID (with this format: 93546de0-9398-11ee-a701-c299aba011e6) that has to be entered on the VoiceFlow Chat ([Choose your pharmacy](https://digibp.github.io/Team-Rolex/))
 
-#### 3. Third step:
+#### 3. Fourth step:
 
 Please enter the process instance ID on the VoiceFlow Chat and select the most convenient pharmacy for you.
 
-#### 4. Fourth Step:
+#### 4. Fifth Step:
 
 Once you have chosen the pharmacy, a notification is sent to the practitioner, the pharmacy, and the patient, and the process is succesfully ended.
 
