@@ -199,6 +199,8 @@ ___________
 
 <img src="./static/img/e-mail_doctor.jpg" width=50% height=50%>
 
+<img src="./static/img/e-mail_patient.jpg" width=50% height=50%>
+
 <img src="./static/img/e-mail_pharmacy_patient.jpg" width=50% height=50%>
 
 ## Conclusion
