@@ -219,7 +219,7 @@ Fort this project, as we are in a testing environment with fictional data, the r
 4. Our project aims to send emails to the pharmacies selected by the patient. In the current test version, the pharmacy email addresses are fictional and will be replaced by real email addresses when switching to the productive system.
 
 ## Acknowledgment
-We would like to thank Charuta and Andreas for their precious coaching and support throughout the project. Their critical questions and valued input helped us to constantly improve our process.
+We would like to thank Charuta and Andreas for their precious coaching and support throughout the project. Their daring questions and valued input helped us to constantly improve our process.
 
 ## References
 
