@@ -1,16 +1,16 @@
 patient_id,patient_name,birthday,gender,prescription
 0,Trevor Williams,8/15/1950,Male,Metformin
-1,Oscar Leon,8/17/2001,Male,"Furosemidopleto,Furosemide,Furosemide,ascorbic acid,Chancleta,Furosemide"
-2,Sheena Romero,10/11/1939,Female,"Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,asd,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Risperidone"
-3,James Johnson,3/25/1979,Male,"metformin,ascorbic acid,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Glucophage,Dafalgan,Ampilitide,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin,Metfromin,Metformin,Metformin,Metformin,Metformin,Metabolim,Metformin,Metformin,Metformin,Metformin,Metformin,Metformin"
-4,Christopher Cruz,9/12/1970,Male,"ascorbic acid,Paroxetine"
-5,Hannah Cuevas,10/3/1942,Male,"ascorbine acid,ascorbine acid,ascorbine acid,ascorbine acid,ascorbine acid,ascorbine acid,ascorbine acid,ascorbine acid,ascorbine acid,ascorbine acid,ascorbine acid,ascorbine acid,ascorbine acid,ascorbine acid,ascorbine acid,ascorbine acid,ascorbine acid,ascorbine acid,ascorbine acid,ascorbine acid,ascorbine acid,ascorbine acid,ascorbine acid,ascorbine acid,ascorbine acid,ascorbine acid,Clozapine"
-6,Gregory Woods,10/3/1958,Male,"ascorbic acid,Venlafaxine"
-7,Brian Barnett,5/18/1977,Male,"Venlafaxine,Venlafaxine"
-8,Adrian Wu,1/10/1994,Male,"NaCl,Lisinopril,Lisinopril,Lisinopril,Lisinopril,Lisinopril,Lisinopril,Lisinopril,Lisinopril,Lisinopril,Lisinopril,Lisinopril,Lisinopril,Lisinopril,Lisinopril,Lisinopril,Lisinopril,Lisinopril,Lisinopril,Lisinopril,Lisinopril,Lisinopril,Lisinopril,Lisinopril,Lisinopril,Lisinopril,Lisinopril,Lisinopril,Lisinopril,Lisinopril,Lisinopril,Lisinopri,Lisinopri,Lisinopri,Lisinopri,Lisinopril,Lisinopril,Lisinopril,Lisinopril,Macrogol,Lisinopril,Macrogol,macrogol,Lisinopril"
-9,Chad Cochran,8/22/1980,Male,"Ascorbicacid,Furosemide"
+1,Oscar Leon,8/17/2001,Male,Furosemid
+2,Sheena Romero,10/11/1939,Female,Metformin
+3,James Johnson,3/25/1979,Male,metformin
+4,Christopher Cruz,9/12/1970,Male,Atorvastatin
+5,Hannah Cuevas,10/3/1942,Male,Marcoumar
+6,Gregory Woods,10/3/1958,Male,Ezetimibe
+7,Brian Barnett,5/18/1977,Male,Venlafaxine
+8,Adrian Wu,1/10/1994,Male,NaCl
+9,Chad Cochran,8/22/1980,Male,Diclofenac
 10,Nathaniel Gray,8/5/1956,Male,Omeprazole
-11,Stephanie Scott,7/15/1968,Female,"Losartan,Losartan"
+11,Stephanie Scott,7/15/1968,Female,Losartan
 12,Jeffrey Garcia,9/4/1991,Male,Atorvastatin
 13,Megan Morris,9/1/2000,Male,Aspirin
 14,James Golden,7/25/1966,Female,Lisinopril
